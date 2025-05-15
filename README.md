@@ -19,7 +19,7 @@ Show the command line options by running
 python ./packages/redata_reports/run/main.py -h
 ```
 
-Prior to generating any reports, configure API endpoints and keys. Copy `./packages/redata_reports/run/secrets.example.py` to `./packages/redata_reports/run/secrets.py` and edit the fields with the appropriate values. See the comments in that file for specific instructions. To generate reports locally, only the Figshare API credentials are needed.
+Prior to generating any reports, configure API endpoints and keys. Copy [`./packages/redata_reports/run/secrets.example.py`](packages/redata_reports/run/secrets.example.py) to `./packages/redata_reports/run/secrets.py` and edit the fields with the appropriate values. See the comments in that file for specific instructions. To generate reports locally, only the Figshare API credentials are needed.
 
 Generate a report. E.g the users report. A CSV will be output in the current working directory in this example.
 ```
