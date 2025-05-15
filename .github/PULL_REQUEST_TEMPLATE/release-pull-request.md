@@ -1,7 +1,8 @@
 <!-- Create a new Release issue before using this template -->
+<!-- Update the Description and create the PR before continuing with the rest of the template -->
 
 **Description**
-<!-- Do not push the release tag until this PR is merged -->
+
 This pull request updates ReQUIAM v0.xx.x -> v0.xx.0. Closes #<insert associated issue number>
 
 <!-- You may create the pull request after editing the Title and Description above. -->
@@ -12,10 +13,11 @@ This pull request updates ReQUIAM v0.xx.x -> v0.xx.0. Closes #<insert associated
 - [ ] Verified the correct branch is being merged by checking the text immediately below the PR title.
 
 **Begin a new release**
-:warning: Do not publish the release until this PR is merged :warning:
+<!-- Do not push the release tag until this PR is merged -->
+:warning: Do not publish the release tag until this PR is merged :warning:
 - [ ] Go to the [New Release](../releases/new) page
 - [ ] In the `Choose a tag` dropdown, enter a new tag name corresponding to the new version. E.g., `v1.0.1`. Then click "Create new tag on publish"
-- [ ] The `Target` should be the main or master branch.
+- [ ] The `Target` should be the `main` branch.
 - [ ] Click the `Generate release notes` button. Review the notes for accuracy
 - [ ] Save the release as Draft.
 
