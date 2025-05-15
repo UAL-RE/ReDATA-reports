@@ -141,7 +141,7 @@ def run(args):
                              'title': article_version['title'],
                              'type': article_version['defined_type_name'],
                              'published_date': datetime.strptime(article_version['published_date'], "%Y-%m-%dT%H:%M:%SZ")
-                                              .strftime("%Y-%m-%d %H:%M:%S") if article_version['published_date'] else '',
+                             .strftime("%Y-%m-%d %H:%M:%S") if article_version['published_date'] else '',
                              'modified_date': datetime.strptime(article_version['modified_date'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S"),
                              'embargo_date': article_version['embargo_date'] if article_version['embargo_date'] else '',
                              'embargo_type': article_version['embargo_type'] if article_version['embargo_type'] else '',
@@ -149,7 +149,7 @@ def run(args):
                              'is_embargoed': article_version['is_embargoed'],
                              'is_public': article_version['is_public'],
                              'report_date': f.get_report_date().strftime('%Y-%m-%d %H:%M:%S')
-                            })
+                           })
             total_usage += article_version['size']
 
     outfile = None
