@@ -3,6 +3,7 @@ packages:
     functions:
       - name: run
         runtime: 'python:default'
+        web: true
         limits:
           timeout: 420000
           memory: 512
