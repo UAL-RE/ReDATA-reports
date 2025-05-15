@@ -1,0 +1,14 @@
+packages:
+  - name: redata_reports
+    functions:
+      - name: run
+        runtime: 'python:default'
+        limits:
+          timeout: 420000
+          memory: 512
+        environment:
+          API_URL_BASE: ${api_url_base}
+          API_TOKEN: ${api_token}
+          GSHEETS_DASHBOARD_POST_URL: ${gsheets_dashboard_post_url}
+          GSHEETS_DASHBOARD_KEY: ${gsheets_dashboard_key}
+          TOKEN: ${do_token}
