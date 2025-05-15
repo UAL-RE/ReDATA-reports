@@ -149,7 +149,7 @@ def run(args):
                              'is_embargoed': article_version['is_embargoed'],
                              'is_public': article_version['is_public'],
                              'report_date': f.get_report_date().strftime('%Y-%m-%d %H:%M:%S')
-                           })
+                             })
             total_usage += article_version['size']
 
     outfile = None
@@ -168,10 +168,10 @@ def run(args):
             s = '{0}\t,{1}\t,{2}\t,{3}\t,{4}\t,{5}'
 
         s = s.format(article['id'], article['version'], article['totalfilesize'],
-                        '"' + article['title'].replace('"', '""') + '"',
-                        article['type'],
-                        article['published_date'], article['modified_date'], article['embargo_date'], article['embargo_type'],
-                        article['embargo_options_type'], article['is_embargoed'], article['is_public'], article['report_date'])
+                     '"' + article['title'].replace('"', '""') + '"',
+                     article['type'],
+                     article['published_date'], article['modified_date'], article['embargo_date'], article['embargo_type'],
+                     article['embargo_options_type'], article['is_embargoed'], article['is_public'], article['report_date'])
 
         if outfile:
             outfile.write(s + '\n')
