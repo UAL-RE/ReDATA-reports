@@ -21,7 +21,7 @@ def get_institution_articles():
         response = requests.get(api_url, headers=f.get_request_headers())
 
         if response.status_code == 200:
-            if response.text=='[]':
+            if response.text == '[]':
                 return article_list
             article_list.extend(json.loads(response.text))
         else:
@@ -33,7 +33,7 @@ def get_public_article_info(article_ids):
     article_info = []
     unpublished_article_ids = []
 
-    if type(article_ids) == str or type(article_ids) == int:
+    if type(article_ids) is str or type(article_ids) is int:
         article_ids = [article_ids]
 
     for id in article_ids:
@@ -65,9 +65,9 @@ def get_private_article_info(article_ids):
     # only returns info for latest version. Use only for articles that are not public.
 
     article_info = []
-    if type(article_ids) == str or type(article_ids) == int:
+    if type(article_ids) is str or type(article_ids) is int:
         article_ids = [article_ids]
-  
+
     for id in article_ids:
         api_url = '{0}/account/articles/{1}'.format(environ['API_URL_BASE'], id)
         response = requests.get(api_url, headers=f.get_request_headers())
@@ -124,7 +124,7 @@ def run(args):
 
     private_articles_info = []
     p = Pool(processes=5)
-    result = p.map(get_private_article_info, private_article_ids) 
+    result = p.map(get_private_article_info, private_article_ids)
     p.close()
     p.join()
 
@@ -137,17 +137,18 @@ def run(args):
     for article in public_articles_info + private_articles_info:
         for article_version in article:
             articles.append({'id': article_version['id'], 'version': article_version['version'],
-                            'totalfilesize': f.format_bytes(article_version['size'], args.units),
-                            'title': article_version['title'],
-                            'type': article_version['defined_type_name'],
-                            'published_date':datetime.strptime(article_version['published_date'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S") if article_version['published_date'] else '',
-                            'modified_date': datetime.strptime(article_version['modified_date'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S"),
-                            'embargo_date': article_version['embargo_date'] if article_version['embargo_date'] else '',
-                            'embargo_type': article_version['embargo_type'] if article_version['embargo_type'] else '',
-                            'embargo_options_type': article_version['embargo_options'][0]['type'] if article_version['embargo_options'] else '',
-                            'is_embargoed': article_version['is_embargoed'],
-                            'is_public': article_version['is_public'],
-                            'report_date': f.get_report_date().strftime('%Y-%m-%d %H:%M:%S')
+                             'totalfilesize': f.format_bytes(article_version['size'], args.units),
+                             'title': article_version['title'],
+                             'type': article_version['defined_type_name'],
+                             'published_date':datetime.strptime(article_version['published_date'], "%Y-%m-%dT%H:%M:%SZ") \
+                                              .strftime("%Y-%m-%d %H:%M:%S") if article_version['published_date'] else '',
+                             'modified_date': datetime.strptime(article_version['modified_date'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S"),
+                             'embargo_date': article_version['embargo_date'] if article_version['embargo_date'] else '',
+                             'embargo_type': article_version['embargo_type'] if article_version['embargo_type'] else '',
+                             'embargo_options_type': article_version['embargo_options'][0]['type'] if article_version['embargo_options'] else '',
+                             'is_embargoed': article_version['is_embargoed'],
+                             'is_public': article_version['is_public'],
+                             'report_date': f.get_report_date().strftime('%Y-%m-%d %H:%M:%S')
                             })
             total_usage += article_version['size']
 

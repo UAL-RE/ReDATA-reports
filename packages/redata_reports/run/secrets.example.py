@@ -21,4 +21,4 @@ environ['API_URL_BASE'] = api_url_base
 environ['API_TOKEN'] = api_token
 environ['GSHEETS_DASHBOARD_POST_URL'] = gsheets_dashboard_post_url
 environ['GSHEETS_DASHBOARD_KEY'] = gsheets_dashboard_key
-environ['TOKEN'] = 
+environ['TOKEN'] = do_token

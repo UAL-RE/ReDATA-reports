@@ -55,10 +55,10 @@ def get_account_info(account_ids):
         if 'orcid_id' not in data:
             data['orcid_id'] = ''
         account_info.append(data)
-        
+
     return account_info
-    
-    
+
+
 def run(args):
     # Optionally writes a CSV report to file and returns a json array of objects with the data that was written.
 
@@ -69,7 +69,7 @@ def run(args):
         print('Request Failed.')
         return []
     print("total number found: {0}".format(len(institution_accounts)))
-    
+
     account_ids = []
     for account in institution_accounts:
         account_ids.append(account['id'])
@@ -80,7 +80,7 @@ def run(args):
     accounts_info = p.map(get_account_info, account_ids)
     p.close()
     p.join()
-    
+
     total_usage = 0
     total_private_usage = 0
     total_public_usage = 0
@@ -96,20 +96,20 @@ def run(args):
             'email\t,quota {0}\t,used_quota_figshareUI {0}\t,private_quota {0}\t,public_quota {0}\t,public+private {0}\t,orcid_id\t,group_id'.
             format(args.units))
 
-    for account in accounts_info: 
+    for account in accounts_info:
         if outfile:
             s = '{0},{1},{2},{3},{4},{5},{6}'
         else:
             s = '{0}\t,{1}\t,{2}\t,{3}\t,{4}\t,{5}\t,{6}'
 
         s = s.format(account[0]['email'],
-                        f.format_bytes(account[0]['quota'], args.units),
-                        f.format_bytes(account[0]['used_quota'], args.units),
-                        f.format_bytes(account[0]['used_quota_private'], args.units),
-                        f.format_bytes(account[0]['used_quota_public'], args.units),
-                        f.format_bytes(account[0]['used_quota_private']+account[0]['used_quota_public'], args.units),
-                        account[0]['orcid_id'],
-                        account[0]['group_id'])
+                     f.format_bytes(account[0]['quota'], args.units),
+                     f.format_bytes(account[0]['used_quota'], args.units),
+                     f.format_bytes(account[0]['used_quota_private'], args.units),
+                     f.format_bytes(account[0]['used_quota_public'], args.units),
+                     f.format_bytes(account[0]['used_quota_private']+account[0]['used_quota_public'], args.units),
+                     account[0]['orcid_id'],
+                     account[0]['group_id'])
 
         if outfile:
             outfile.write(s + '\n')
@@ -132,4 +132,4 @@ def run(args):
         outfile.close()
 
     return accounts_info
-    
+

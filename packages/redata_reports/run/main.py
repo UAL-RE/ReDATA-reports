@@ -35,7 +35,7 @@ def init_argparse():
     parser.add_argument(
         '-u', '--units', choices=['B', 'KB', 'MB', 'GB', 'TB'],
         default='GB', help='Set the output units. Default is %(default)s')
-        
+
     return parser
 
 
@@ -52,19 +52,18 @@ def run(args):
         print('Running "items" report')
         data = items_report.run(args)
         result = result + f'Running "items" report completed. {len(data)} items.'
-        if args.sync_to_dashboard:             
+        if args.sync_to_dashboard:
             result = result + f'\nSyncing "items" to dashboard completed. Result: {f.sync_to_dashboard(data, "items")}.'
     if 'users' in args.report:
         print('Running "users" report')
         data = userquota_report.run(args)
         result = result + f'Running "users" report completed. {len(data)} users.'
-        if args.sync_to_dashboard: 
+        if args.sync_to_dashboard:
             result = result + f'\nSyncing "users" to dashboard completed. Result: {f.sync_to_dashboard(data, "users")}.'
 
     return result
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     args = init_argparse().parse_args()
     print(run(args))
-
