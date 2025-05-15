@@ -140,7 +140,7 @@ def run(args):
                              'totalfilesize': f.format_bytes(article_version['size'], args.units),
                              'title': article_version['title'],
                              'type': article_version['defined_type_name'],
-                             'published_date':datetime.strptime(article_version['published_date'], "%Y-%m-%dT%H:%M:%SZ") \
+                             'published_date': datetime.strptime(article_version['published_date'], "%Y-%m-%dT%H:%M:%SZ")
                                               .strftime("%Y-%m-%d %H:%M:%S") if article_version['published_date'] else '',
                              'modified_date': datetime.strptime(article_version['modified_date'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S"),
                              'embargo_date': article_version['embargo_date'] if article_version['embargo_date'] else '',
@@ -156,8 +156,8 @@ def run(args):
     if args.outfile:
         outfile = f.get_report_outfile(args.outfile, 'items')
         outfile.write(
-            f'id,version,size ({args.units}),' +
-            'title,type,is_public,published (UTC),last_modified (UTC),embargo date (UTC),embargo type,embargo options,is embargoed,report date\n')
+            f'id,version,size ({args.units}),'
+            + 'title,type,is_public,published (UTC),last_modified (UTC),embargo date (UTC),embargo type,embargo options,is embargoed,report date\n')
     else:
         print(f'id\t,version\t,size ({args.units})\t,title,type,published')
 

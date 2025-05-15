@@ -107,7 +107,7 @@ def run(args):
                      f.format_bytes(account[0]['used_quota'], args.units),
                      f.format_bytes(account[0]['used_quota_private'], args.units),
                      f.format_bytes(account[0]['used_quota_public'], args.units),
-                     f.format_bytes(account[0]['used_quota_private']+account[0]['used_quota_public'], args.units),
+                     f.format_bytes(account[0]['used_quota_private'] + account[0]['used_quota_public'], args.units),
                      account[0]['orcid_id'],
                      account[0]['group_id'])
 
@@ -132,4 +132,3 @@ def run(args):
         outfile.close()
 
     return accounts_info
-
