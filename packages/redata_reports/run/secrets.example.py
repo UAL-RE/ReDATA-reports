@@ -1,6 +1,8 @@
-# Copy this file as secrets.py and replace the values with your own. 
+# Copy this file as secrets.py and replace the values with your own.
 # Do not commit secrets.py to version control.
 # Use secrets.py to store secrets so code works locally and as a DO function (see project.yml).
+
+from os import environ
 
 # Figshare API
 api_url_base = ''
@@ -15,9 +17,8 @@ do_token = ''
 
 
 # **************************************************************
-from os import environ
 environ['API_URL_BASE'] = api_url_base
 environ['API_TOKEN'] = api_token
 environ['GSHEETS_DASHBOARD_POST_URL'] = gsheets_dashboard_post_url
 environ['GSHEETS_DASHBOARD_KEY'] = gsheets_dashboard_key
-environ['TOKEN'] = do_token
+environ['TOKEN'] = 

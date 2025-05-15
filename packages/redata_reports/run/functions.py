@@ -5,6 +5,7 @@ import simplejson as json
 
 report_date = None
 
+
 def get_request_headers():
     """
     Returns the headers to use for the figshare requests.get calls
@@ -12,7 +13,8 @@ def get_request_headers():
     headers = {'Content-Type': 'application/json',
                'Authorization': 'Bearer {0}'.format(environ['API_TOKEN'])}
     return headers
-   
+
+
 def get_report_date():
     """
     Returns a timestamp that is the date and time of data retrieval
@@ -22,24 +24,25 @@ def get_report_date():
         report_date = datetime.now()
     return report_date
 
+
 def sync_to_dashboard(data, report):
     """
     Sends the given data to the Google Sheet given by report via the sheet's POST request url
     """
     print(f'Sending data for report "{report}" to dashboard')
-    
+
     if not data:
         return 'No data to send'
-    
+
     postdata = {"action": "insertupdate",
                 "sheet": report,
                 "accesskey": environ['GSHEETS_DASHBOARD_KEY'],
                 "data": data}
-                
+
     with open('data.json', 'w') as jsonfile:
         json.dump(postdata, jsonfile)
-        
-    response = requests.post(environ['GSHEETS_DASHBOARD_POST_URL'], 
+
+    response = requests.post(environ['GSHEETS_DASHBOARD_POST_URL'],
                              headers={'Content-Type': 'application/json'},
                              json=postdata)
 
@@ -48,11 +51,12 @@ def sync_to_dashboard(data, report):
         result = response.content
     else:
         result = f'Request to dashboard sheet returned code {response.status_code}'
-  
+
     return result
 
+
 def format_bytes(bytes, unit, append_unit=False, SI=False):
-    #https://stackoverflow.com/a/52684562
+    # https://stackoverflow.com/a/52684562
     """
     Converts bytes to common units such as kb, kib, KB, mb, mib, MB
 
@@ -77,8 +81,8 @@ def format_bytes(bytes, unit, append_unit=False, SI=False):
     if unit == "B" or unit.lower() in "byte bytes":
         return bytes
     if unit.lower() in "b bit bits".split():
-        return f"{bytes*8}" + f' {unit}' if append_unit else ''
-    unitN = unit[0].upper()+unit[1:].replace("s","")  # Normalised
+        return f"{bytes * 8}" + f' {unit}' if append_unit else ''
+    unitN = unit[0].upper() + unit[1:].replace("s", "")  # Normalised
     reference = {"Kb Kib Kibibit Kilobit": (7, 1),
                  "KB KiB Kibibyte Kilobyte": (10, 1),
                  "Mb Mib Mebibit Megabit": (17, 2),
@@ -96,25 +100,26 @@ def format_bytes(bytes, unit, append_unit=False, SI=False):
                  "Yb Yib Yobibit Yottabit": (77, 8),
                  "YB YiB Yobibyte Yottabyte": (80, 8),
                  }
-    key_list = '\n'.join(["     b Bit"] + [x for x in reference.keys()]) +"\n"
+    key_list = '\n'.join(["     b Bit"] + [x for x in reference.keys()]) + "\n"
     if unitN not in key_list:
         raise IndexError(f"\n\nConversion unit must be one of:\n\n{key_list}")
-    units, divisors = [(k,v) for k,v in reference.items() if unitN in k][0]
+    units, divisors = [(k, v) for k, v in reference.items() if unitN in k][0]
     if SI:
-        divisor = 1000**divisors[1]/8 if "bit" in units else 1000**divisors[1]
+        divisor = 1000**divisors[1] / 8 if "bit" in units else 1000**divisors[1]
     else:
         divisor = float(1 << divisors[0])
     value = bytes / divisor
-    #return f"{value:,.0f} {unitN}{(value != 1 and len(unitN) > 3)*'s'}"
+    # return f"{value:,.0f} {unitN}{(value != 1 and len(unitN) > 3)*'s'}"
     return f"{value:.2f}" + f' {unit}' if append_unit else f"{value:.2f}"
+
 
 def get_report_outfile(reportname, prefix=''):
     """
     Returns a writable file in the current directory
-    
+
     reportname: str
         The name of the file to use. If it starts with '$$*$$', then prefix will be used
-        
+
     prefix: str
         This string will be prefixed to a time stamep to form the file name
     """
