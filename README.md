@@ -5,7 +5,7 @@ Collects data from ReDATA that can be used to create reports. Data is output in 
 - Items report: Information about public and private items and their versions
 - Users report: Information about user accounts
 
-The project is structured as a Digital Ocean Function but can be executed independently as well.
+The project is structured as a Digital Ocean Function but can be executed independently as well. The code should work with any Figshare for Institutions instance. 
 
 # Local Usage
 
@@ -28,12 +28,14 @@ python ./packages/redata_reports/run/main.py -r users -o
 
 ## Dashboard
 
-The `--sync-to-dashboard` option uploads data to the Google dashboard (data is stored in a Google Sheet and displayed in a Looker Studio dashboard). Setting this flag includes `-u B -r items -r users`. The destination sheet is configured in `secrets.py`.
+The `--sync-to-dashboard` option uploads data to the Google dashboard (data is stored in a Google Sheet and displayed in a Looker Studio dashboard). Setting this flag includes `-u B -r items -r users`. The destination sheet is configured in `secrets.py`. 
+
+Prior to using `--sync-to-dashboard`, the target Google Sheet must be set up. See the [readme](gsheet_webapp/README.md) in `gsheet_webapp`. Once that is done, run:
 ```
 python packages/redata_reports/main.py --sync-to-dashboard
 ```
+A `data.json` file is auto-generated in the current working directory. This file can be deleted once the sync completes.
 
-Prior to using `--sync-to-dashboard`, the target Google Sheet must be set up. See the [readme](gsheet_webapp/README.md) in `gsheet_webapp`.
 
 ### Testing the sheet upload endpoint using cURL:
 
@@ -44,10 +46,20 @@ Simple test (no data uploaded):
 curl -L "https://script.google.com/macros/s/XXXXXXXX/exec" -H "Content-Type: application/json"  --data '{"action":"insertupdate","accesskey":"YYYYYY"}'
 ```
 
-With data upload (data.json is generated when `--sync-to-dashboard` is set):
+With data upload:
 ```
 curl -L "https://script.google.com/macros/s/XXXXXXXX/exec" -H "Content-Type: application/json" --data-binary @data.json
 ```
+
+### Example Dashboard
+An example of how the data can be presented/summarized in a dashboard using LookerStudio.
+<details>
+  <summary>Screenshot</summary>
+  
+  ![LookerStudioSample](https://github.com/user-attachments/assets/659abeb3-8a81-4eb6-8bb1-0632f50d8958)
+  
+</details>
+
 
 ## DO Functions
 
