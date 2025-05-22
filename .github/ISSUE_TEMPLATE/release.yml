@@ -21,5 +21,5 @@ body:
       options:
       - label: Check that the title of this issue reflects the new version number.
       - label: Create a new branch by clicking on `create branch` on the right-hand sidebar (as shown in the [GitHub docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-a-branch-for-an-issue)). Leave all options as default.
-      - label: In the new branch, update the version in [`Code.gs`](gsheet_webapp/Code.gs) and [`version.py`](packages/redata_reports/run/version.py) as needed and commit.
+      - label: In the new branch, update the version in [`Code.gs`](../blob/main/gsheet_webapp/Code.gs) and [`version.py`](../blob/main/packages/redata_reports/run/version.py) as needed. The overall version of the release may diverge from the versions in the two files (e.g., release version 2.0.0 may correspond to v1.1. of the WebApp and v2.0 of the reports code. Commit the changes.
       - label: Create a [new PR](../pulls). Ensure the base branch is `main` and the comparison branch is the new branch. Use the "Release" PR template.
