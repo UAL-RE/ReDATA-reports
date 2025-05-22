@@ -33,7 +33,7 @@ The `--sync-to-dashboard` option uploads data to the Google dashboard (data is s
 python packages/redata_reports/main.py --sync-to-dashboard
 ```
 
-Prior to using `--sync-to-dashboard`, the target Google Sheet must be set up. See the [readme](gsheets_webapp/README.md) in `gsheet_webapp`.
+Prior to using `--sync-to-dashboard`, the target Google Sheet must be set up. See the [readme](gsheet_webapp/README.md) in `gsheet_webapp`.
 
 ### Testing the sheet upload endpoint using cURL:
 

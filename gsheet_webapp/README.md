@@ -7,8 +7,8 @@ This Sheet accepts data from the report generator via a POST and stores it for u
 1. Create a new Google Sheet document in the same Google account as the LookerStudio dashboard
 1. Add the following sheets
 	1. `Readme` (optional)
-	1. `items`. Create columns exactly matching the name and order of the keys in the `articles` dictionary from [`items_report.py`](packages/redata_reports/run/items_report.py)
-	1. `users`. Create columns exactly matching the name and order of the keys in the `account_info` dictionary from [`userquota_report.py`](packages/redata_reports/run/userquota_report.py)
+	1. `items`. Create columns exactly matching the name and order of the keys in the `articles` dictionary from [`items_report.py`](../packages/redata_reports/run/items_report.py)
+	1. `users`. Create columns exactly matching the name and order of the keys in the `account_info` dictionary from [`userquota_report.py`](../packages/redata_reports/run/userquota_report.py)
 
 ## WebApp
 
@@ -28,7 +28,7 @@ This Sheet accepts data from the report generator via a POST and stores it for u
 1. Create the auth token
 	1. Open the project settings by clicking the gear icon on the left
 	1. Under Script Properties, add a new property `accesskey`
-	1. Set the value to be the same as `gsheets_dashboard_key` in [`secrets.py`](packages/redata_reports/run/secrets.example.py)
+	1. Set the value to be the same as `gsheets_dashboard_key` in [`secrets.py`](../packages/redata_reports/run/secrets.example.py)
 	
 ### Deployment
 
