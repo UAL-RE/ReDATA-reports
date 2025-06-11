@@ -4,20 +4,22 @@ function testData_insertActionOnly() {
       "contents": JSON.stringify(
         {
           "action":"insertupdate",
-          "accesskey": PropertiesService.getScriptProperties().getProperty("key")
+          "accesskey": PropertiesService.getScriptProperties().getProperty("accesskey"),
+          "sheet": "items"
         }
       )
     }
   };
 }
 
-function testData_insertExists(){
+function testData_insertExists_items(){
   return {
     "postData": {
       "contents": JSON.stringify(
         {
           "action":"insertupdate",
-          "accesskey": PropertiesService.getScriptProperties().getProperty("key"),
+          "accesskey": PropertiesService.getScriptProperties().getProperty("accesskey"),
+          "sheet": "items",
           "data": 
               [
                 {
@@ -48,6 +50,44 @@ function testData_insertExists(){
                   "is_embargoed": false,
                   "is_public": true,
                   "report_date": "2025-04-03 20:37:32"
+                }
+              ]
+          }
+      )
+    }
+  };
+}
+
+function testData_insertExists_users(){
+  return {
+    "postData": {
+      "contents": JSON.stringify(
+        {
+          "action":"insertupdate",
+          "accesskey": PropertiesService.getScriptProperties().getProperty("accesskey"),
+          "sheet": "users",
+          "data": 
+              [
+                {
+                  "created_date": "2020-02-20T10:21:28Z",
+                  "modified_date": "2021-10-11T16:40:11Z",
+                  "group_id": 26114,
+                  "quota": 1073741824,
+                  "maximum_file_size": 0,
+                  "used_quota": 0,
+                  "used_quota_private": 0,
+                  "used_quota_public": 0,
+                  "pending_quota_request": false,
+                  "id": 2267819,
+                  "first_name": "ReDATA",
+                  "last_name": "Administrator",
+                  "email": "data-management@arizona.edu",
+                  "active": 1,
+                  "institution_id": 797,
+                  "institution_user_id": "",
+                  "user_id": 8472170,
+                  "orcid_id": "",
+                  "report_date": "2025-06-11 14:46:27"
                 }
               ]
           }
