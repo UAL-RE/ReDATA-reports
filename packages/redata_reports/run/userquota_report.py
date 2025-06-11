@@ -76,7 +76,7 @@ def run(args):
 
     print('Getting usage by account ID')
 
-    p = Pool(processes=20)
+    p = Pool(processes=5)
     accounts_info = p.map(get_account_info, account_ids)
     p.close()
     p.join()
