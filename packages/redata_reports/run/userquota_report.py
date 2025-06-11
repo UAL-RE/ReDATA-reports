@@ -32,31 +32,25 @@ def get_institution_accounts():
             return None
 
 
-def get_account_info(account_ids):
-    account_info = []
-    if type(account_ids) is str or type(account_ids) is int:
-        account_ids = [account_ids]
+def get_account_info(id):
+    api_url = '{0}/account?impersonate={1}'.format(environ['API_URL_BASE'], id)
+    response = requests.get(api_url, headers=f.get_request_headers())
 
-    for id in account_ids:
-        api_url = '{0}/account?impersonate={1}'.format(environ['API_URL_BASE'], id)
+    if response.status_code == 200:
+        data = json.loads(response.text)
+    elif response.status_code == 403:
+        # can't impersonate ourselves
+        api_url = '{0}/account'.format(environ['API_URL_BASE'])
         response = requests.get(api_url, headers=f.get_request_headers())
+        data = json.loads(response.text)
+    else:
+        print('Error (/account?impersonate={1}), Response code {0}'.format(response.status_code, id))
+        return ''
 
-        if response.status_code == 200:
-            data = json.loads(response.text)
-        elif response.status_code == 403:
-            # can't impersonate ourselves
-            api_url = '{0}/account'.format(environ['API_URL_BASE'])
-            response = requests.get(api_url, headers=f.get_request_headers())
-            data = json.loads(response.text)
-        else:
-            print('Error (/account?impersonate={1}), Response code {0}'.format(response.status_code, id))
-            continue
+    if 'orcid_id' not in data:
+        data['orcid_id'] = ''
 
-        if 'orcid_id' not in data:
-            data['orcid_id'] = ''
-        account_info.append(data)
-
-    return account_info
+    return data
 
 
 def run(args):
@@ -76,10 +70,17 @@ def run(args):
 
     print('Getting usage by account ID')
 
+    accounts_info = []
     p = Pool(processes=5)
-    accounts_info = p.map(get_account_info, account_ids)
+    result = p.map(get_account_info, account_ids)
     p.close()
     p.join()
+
+    # get rid of any empty results and add timestamp
+    for r in result:
+        if len(r) > 0:
+            r['report_date'] = f.get_report_date().strftime('%Y-%m-%d %H:%M:%S')
+            accounts_info.append(r)
 
     total_usage = 0
     total_private_usage = 0
@@ -102,23 +103,23 @@ def run(args):
         else:
             s = '{0}\t,{1}\t,{2}\t,{3}\t,{4}\t,{5}\t,{6}'
 
-        s = s.format(account[0]['email'],
-                     f.format_bytes(account[0]['quota'], args.units),
-                     f.format_bytes(account[0]['used_quota'], args.units),
-                     f.format_bytes(account[0]['used_quota_private'], args.units),
-                     f.format_bytes(account[0]['used_quota_public'], args.units),
-                     f.format_bytes(account[0]['used_quota_private'] + account[0]['used_quota_public'], args.units),
-                     account[0]['orcid_id'],
-                     account[0]['group_id'])
+        s = s.format(account['email'],
+                     f.format_bytes(account['quota'], args.units),
+                     f.format_bytes(account['used_quota'], args.units),
+                     f.format_bytes(account['used_quota_private'], args.units),
+                     f.format_bytes(account['used_quota_public'], args.units),
+                     f.format_bytes(account['used_quota_private'] + account['used_quota_public'], args.units),
+                     account['orcid_id'],
+                     account['group_id'])
 
         if outfile:
             outfile.write(s + '\n')
         elif not args.sync_to_dashboard:
             print(s)
 
-        total_usage += account[0]['used_quota']
-        total_public_usage += account[0]['used_quota_public']
-        total_private_usage += account[0]['used_quota_private']
+        total_usage += account['used_quota']
+        total_public_usage += account['used_quota_public']
+        total_private_usage += account['used_quota_private']
 
     print()
     print('Unit\t\tTotal Usage,Total Public Usage,Total Private Usage')
