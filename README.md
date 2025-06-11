@@ -2,7 +2,7 @@
 
 Collects data from ReDATA that can be used to create reports. Data is output in CSV format.
 
-- Items report: Information about public and private items and their versions
+- Items report: Information about public and private items and their versions. Note this report overestimates the total storage used because it does take into account the fact that Figshare does not make copies of unchanged files across dataset versions. The users report is the most accurate way to get total storage used.
 - Users report: Information about user accounts
 
 The project is structured as a Digital Ocean Function but can be executed independently as well. The code should work with any Figshare for Institutions instance. 

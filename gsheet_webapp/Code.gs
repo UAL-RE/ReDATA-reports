@@ -16,7 +16,7 @@
 
 var SCRIPT_PROP = PropertiesService.getScriptProperties(); // new property service
 
-version="1.0"; //change when the version changes
+version="1.1"; //change when the version changes
 
 //Best practice for using BetterLog and logging to a spreadsheet:
 // You can add and set the property "BetterLogLevel" in File > Project Properties and change it to
@@ -29,14 +29,14 @@ Logger.info('ReDATA Reporting Data v' + version);
 function test(){
   /* See here when testing POST with cURL to avoid "Sorry, unable to open the file at this time."
   https://stackoverflow.com/questions/49618265#comment113436606_49618605
-  Ie., omit -X POST:
+  I.e., omit -X POST:
     curl -L "script url" -H "Content-Type: application/json"  --data '{"action":"insertupdate"}'
   */
 
-  e=testData_insertActionOnly();
-  e=testData_insertExists();
+  e=testData_insertExists_users();
+  //e=testData_insertExists_items();
   
-  console.log(doPost(e).toString());
+  console.log(doPost(e).getContent());
 }
 
 // If you don't want to expose either GET or POST methods you can comment out the appropriate function
@@ -72,7 +72,7 @@ function doPost(e){
     result = {"result":"error", "error": err.message};
   }
 
-  return ContentService.createTextOutput(JSON.stringify(result));
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
 }
 
 function handleAction(action, objJSON) {
@@ -81,9 +81,9 @@ function handleAction(action, objJSON) {
   var sheet = objJSON.sheet;
   try {
     switch(action) {
-      case "readall":        
+      case "readall":
         break;
-      case "insertupdate":        
+      case "insertupdate":
         result = insert_or_update(data, sheet);
         break;
       default:
@@ -113,6 +113,7 @@ function insert_or_update(data, sheet_name, headRow = 1) {
 
     var headers = sheet.getRange(headRow, 1, 1, sheet.getLastColumn()).getValues()[0];
     var numRowsBeforeUpdate = sheet.getLastRow();
+    var numRowsAfterUpdate = numRowsBeforeUpdate;
     var rows = [];
     for (item of data){
       var row = [];
@@ -131,10 +132,8 @@ function insert_or_update(data, sheet_name, headRow = 1) {
     // more efficient to set values as [][] array than individually
     sheet.getRange(sheet.getLastRow()+1, 1, rows.length, rows[0].length).setValues(rows);
 
-    // remove any duplicates based on id, version. Only items with different id+version take up space (I think)
-    alldata = sheet.getDataRange();
-    deduped = alldata.removeDuplicates([1, 2]);
-    numRowsAfterUpdate = deduped.getLastRow();
+    dedupe(sheet, headers);
+    numRowsAfterUpdate = sheet.getLastRow();
 
     // return json success results
     Logger.info("Success, rows added: " + (numRowsAfterUpdate - numRowsBeforeUpdate));
@@ -148,6 +147,53 @@ function insert_or_update(data, sheet_name, headRow = 1) {
     lock.releaseLock();
   }
   
+}
+
+function dedupe(sheet, headers) {
+    /*
+    Remove duplicates from the given sheet based on specific criteria.
+    */
+
+    var alldata;
+    var reportDateCol = 0;
+    
+    // get the index of the report_date column
+    for (i in headers){
+        if (headers[i] == "report_date"){
+          reportDateCol = parseInt(i) + 1;
+          break;
+        }
+    }
+
+    //skip the header
+    alldata = sheet.getRange(2, 1, sheet.getLastRow(), sheet.getLastColumn());
+
+    switch(sheet.getName()) {
+      case "items":
+        // Remove any duplicates based on id, version. This will still overestimate storage use slightly since it doesn't
+        // take into account the fact that figshare does not duplicate unchanged files across dataset versions.
+        // The user report is actually the more accurate storage measure
+        alldata.removeDuplicates([1, 2]);
+        break;
+      case "users":
+        //first, remove exact duplicates (i.e., where none of the information changed)
+        alldata.removeDuplicates([1, 2, 3, 4, 5, 6, 7]);
+        
+        // When any information changes, keep the latest version of the record only.
+        // Reverse sort the range by report date so that removeDuplicates removes the earlier entry, keeping the latest one.
+        alldata.sort({column: reportDateCol, ascending: false});
+        
+        // Now, remove duplicates based on email only. The total number of items should be equal to the total number of user accounts + 1
+        alldata.removeDuplicates([1]);
+        
+        //sort ascending again
+        alldata.sort({column: reportDateCol, ascending: true});
+        
+        break;
+      default:
+        throw new Error("Sheet " + sheet_name + " not found for dedupe");
+    }
+
 }
 
 function setup() {

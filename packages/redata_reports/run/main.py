@@ -5,7 +5,9 @@
 # Author: Fernando Rios
 
 import argparse
+from os import environ
 from version import __version__, __commit__
+import secrets
 import functions as f
 import items_report
 import userquota_report
@@ -66,4 +68,11 @@ def run(args):
 
 if __name__ == '__main__':
     args = init_argparse().parse_args()
+
+    environ['API_URL_BASE'] = secrets.api_url_base
+    environ['API_TOKEN'] = secrets.api_token
+    environ['GSHEETS_DASHBOARD_POST_URL'] = secrets.gsheets_dashboard_post_url
+    environ['GSHEETS_DASHBOARD_KEY'] = secrets.gsheets_dashboard_key
+    environ['TOKEN'] = secrets.do_token
+
     print(run(args))

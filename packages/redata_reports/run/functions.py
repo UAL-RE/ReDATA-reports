@@ -39,7 +39,7 @@ def sync_to_dashboard(data, report):
                 "accesskey": environ['GSHEETS_DASHBOARD_KEY'],
                 "data": data}
 
-    with open('data.json', 'w') as jsonfile:
+    with open(f'data_{report}.json', 'w') as jsonfile:
         json.dump(postdata, jsonfile)
 
     response = requests.post(environ['GSHEETS_DASHBOARD_POST_URL'],
