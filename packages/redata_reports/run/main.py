@@ -42,6 +42,8 @@ def init_argparse():
 
 
 def run(args):
+    print(f'This is redata-reports version v{__version__} {__commit__}')
+    
     if args.sync_to_dashboard:
         args.units = 'B'
         args.report = ['items', 'users']
