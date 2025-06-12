@@ -133,11 +133,12 @@ function insert_or_update(data, sheet_name, headRow = 1) {
     sheet.getRange(sheet.getLastRow()+1, 1, rows.length, rows[0].length).setValues(rows);
 
     dedupe(sheet, headers);
+    SpreadsheetApp.flush();
     numRowsAfterUpdate = sheet.getLastRow();
 
     // return json success results
-    Logger.info("Success, rows added: " + (numRowsAfterUpdate - numRowsBeforeUpdate));
-    return {"result":"success", "rows_added": (numRowsAfterUpdate - numRowsBeforeUpdate)};
+    Logger.info("Success, rows added or changed: " + (numRowsAfterUpdate - numRowsBeforeUpdate));
+    return {"result":"success", "rows_addedchanged": (numRowsAfterUpdate - numRowsBeforeUpdate)};
 
   } catch(e){
     Logger.severe(e);
@@ -167,6 +168,11 @@ function dedupe(sheet, headers) {
 
     //skip the header
     alldata = sheet.getRange(2, 1, sheet.getLastRow(), sheet.getLastColumn());
+
+    // Fix "The coordinates of the range are outside the dimensions of the sheet" when sorting or removing duplicates
+    // https://stackoverflow.com/a/70743693
+    let maxRows = sheet.getMaxRows();
+    if(alldata.getLastRow() >= maxRows) {sheet.insertRowsAfter(maxRows,1);}
 
     switch(sheet.getName()) {
       case "items":
