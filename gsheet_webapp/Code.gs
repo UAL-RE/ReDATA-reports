@@ -130,9 +130,9 @@ function insert_or_update(data, sheet_name, headRow = 1) {
     }
 
     // more efficient to set values as [][] array than individually
+    sheet.deleteRows(2, sheet.getLastRow()-1);
     sheet.getRange(sheet.getLastRow()+1, 1, rows.length, rows[0].length).setValues(rows);
 
-    dedupe(sheet, headers);
     SpreadsheetApp.flush();
     numRowsAfterUpdate = sheet.getLastRow();
 
@@ -148,58 +148,6 @@ function insert_or_update(data, sheet_name, headRow = 1) {
     lock.releaseLock();
   }
   
-}
-
-function dedupe(sheet, headers) {
-    /*
-    Remove duplicates from the given sheet based on specific criteria.
-    */
-
-    var alldata;
-    var reportDateCol = 0;
-    
-    // get the index of the report_date column
-    for (i in headers){
-        if (headers[i] == "report_date"){
-          reportDateCol = parseInt(i) + 1;
-          break;
-        }
-    }
-
-    //skip the header
-    alldata = sheet.getRange(2, 1, sheet.getLastRow(), sheet.getLastColumn());
-
-    // Fix "The coordinates of the range are outside the dimensions of the sheet" when sorting or removing duplicates
-    // https://stackoverflow.com/a/70743693
-    let maxRows = sheet.getMaxRows();
-    if(alldata.getLastRow() >= maxRows) {sheet.insertRowsAfter(maxRows,1);}
-
-    switch(sheet.getName()) {
-      case "items":
-        // Remove any duplicates based on id, version. This will still overestimate storage use slightly since it doesn't
-        // take into account the fact that figshare does not duplicate unchanged files across dataset versions.
-        // The user report is actually the more accurate storage measure
-        alldata.removeDuplicates([1, 2]);
-        break;
-      case "users":
-        //first, remove exact duplicates (i.e., where none of the information changed)
-        alldata.removeDuplicates([1, 2, 3, 4, 5, 6, 7]);
-        
-        // When any information changes, keep the latest version of the record only.
-        // Reverse sort the range by report date so that removeDuplicates removes the earlier entry, keeping the latest one.
-        alldata.sort({column: reportDateCol, ascending: false});
-        
-        // Now, remove duplicates based on email only. The total number of items should be equal to the total number of user accounts + 1
-        alldata.removeDuplicates([1]);
-        
-        //sort ascending again
-        alldata.sort({column: reportDateCol, ascending: true});
-        
-        break;
-      default:
-        throw new Error("Sheet " + sheet_name + " not found for dedupe");
-    }
-
 }
 
 function setup() {
