@@ -1,3 +1,8 @@
+## v1.1.2
+
+* Fix: double counting of storage used in Items Report dashboard (Issue #15) by @zoidy in https://github.com/UAL-RE/ReDATA-reports/pull/16
+
+
 ## v1.1.1
 
 * Fix: Fixes "The coordinates of the range are outside the dimensions of the sheet" when sorting or removing duplicates (Issue #10) by @zoidy in https://github.com/UAL-RE/ReDATA-reports/pull/11
