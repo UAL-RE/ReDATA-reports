@@ -5,12 +5,15 @@
 # Author: Fernando Rios
 
 import argparse
+import sys
 from os import environ
 from version import __version__, __commit__
-import secrets
-import functions as f
 import items_report
 import userquota_report
+
+sys.path.insert(0, 'lib/')
+import functions as f
+import secrets
 
 
 def init_argparse():
@@ -36,7 +39,7 @@ def init_argparse():
     )
     parser.add_argument(
         '-u', '--units', choices=['B', 'KB', 'MB', 'GB', 'TB'],
-        default='GB', help='Set the output units. Default is %(default)s')
+        default='GB', help='Set the output size units. Default is %(default)s')
 
     return parser
 
@@ -71,8 +74,8 @@ def run(args):
 if __name__ == '__main__':
     args = init_argparse().parse_args()
 
-    environ['API_URL_BASE'] = secrets.api_url_base
-    environ['API_TOKEN'] = secrets.api_token
+    environ['API_FIGSHARE_URL_BASE'] = secrets.api_figshare_url_base
+    environ['API_FIGSHARE_TOKEN'] = secrets.api_figshare_token
     environ['GSHEETS_DASHBOARD_POST_URL'] = secrets.gsheets_dashboard_post_url
     environ['GSHEETS_DASHBOARD_KEY'] = secrets.gsheets_dashboard_key
     environ['TOKEN'] = secrets.do_token

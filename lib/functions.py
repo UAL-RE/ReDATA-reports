@@ -11,7 +11,7 @@ def get_request_headers():
     Returns the headers to use for the figshare requests.get calls
     """
     headers = {'Content-Type': 'application/json',
-               'Authorization': 'Bearer {0}'.format(environ['API_TOKEN'])}
+               'Authorization': 'Bearer {0}'.format(environ['API_FIGSHARE_TOKEN'])}
     return headers
 
 
