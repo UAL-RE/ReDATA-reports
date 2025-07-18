@@ -13,3 +13,18 @@ packages:
           GSHEETS_DASHBOARD_POST_URL: ${gsheets_dashboard_post_url}
           GSHEETS_DASHBOARD_KEY: ${gsheets_dashboard_key}
           TOKEN: ${do_token}
+  - name: trello_reports
+    functions:
+      - name: run
+        runtime: 'python:default'
+        web: true
+        limits:
+          timeout: 420000
+          memory: 512
+        environment:
+          API_TRELLO_URL_BASE: ${api_trello_url_base}
+          API_TRELLO_KEY: ${api_trello_key}
+          API_TRELLO_TOKEN: ${api_trello_token}
+          GSHEETS_DASHBOARD_POST_URL: ${gsheets_dashboard_post_url}
+          GSHEETS_DASHBOARD_KEY: ${gsheets_dashboard_key}
+          TOKEN: ${do_token}
