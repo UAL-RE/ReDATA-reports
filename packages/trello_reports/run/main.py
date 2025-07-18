@@ -14,6 +14,7 @@ sys.path.insert(0, 'lib/')
 import functions as f
 import secrets
 
+
 def init_argparse():
     parser = argparse.ArgumentParser(
         description='Runs reports for Trello stats'
@@ -56,9 +57,9 @@ def run(args):
     if 'curators' in args.report:
         print('Running "curators" report')
         result = f.get_report_date()
-        #data = curator_report.run(args)
-        #result = result + f'Running "curator" report completed. {len(data)} curators.'
-        #if args.sync_to_dashboard:
+        # data = curator_report.run(args)
+        # result = result + f'Running "curator" report completed. {len(data)} curators.'
+        # if args.sync_to_dashboard:
         #    result = result + f'\nSyncing "curator" to dashboard completed. Result: {f.sync_to_dashboard(data, "curator")}.'
     if 'items' in args.report:
         print('Running "items" report')
