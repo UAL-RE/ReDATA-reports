@@ -5,8 +5,13 @@
 from os import environ
 
 # Figshare API
-api_url_base = ''
-api_token = ''
+api_figshare_url_base = ''
+api_figshare_token = ''
+
+# Trello API
+api_trello_url_base = ''
+api_trello_key = ''
+api_trello_token = ''
 
 # Google sheet
 gsheets_dashboard_post_url = ''
@@ -14,11 +19,3 @@ gsheets_dashboard_key = ''
 
 # DO access token. When deployed as a function, all requests must send this token in the 't' parameter of the GET request
 do_token = ''
-
-
-# **************************************************************
-environ['API_URL_BASE'] = api_url_base
-environ['API_TOKEN'] = api_token
-environ['GSHEETS_DASHBOARD_POST_URL'] = gsheets_dashboard_post_url
-environ['GSHEETS_DASHBOARD_KEY'] = gsheets_dashboard_key
-environ['TOKEN'] = do_token
