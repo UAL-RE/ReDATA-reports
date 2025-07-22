@@ -1,6 +1,7 @@
 from datetime import datetime
 from os import environ
 import requests
+import re
 import simplejson as json
 
 report_date = None
@@ -110,7 +111,77 @@ def format_bytes(bytes, unit, append_unit=False, SI=False):
         divisor = float(1 << divisors[0])
     value = bytes / divisor
     # return f"{value:,.0f} {unitN}{(value != 1 and len(unitN) > 3)*'s'}"
-    return f"{value:.2f}" + f' {unit}' if append_unit else f"{value:.2f}"
+    return f'{value:.2f} {unit}' if append_unit else f'{value:.2f}'
+
+
+def format_duration(duration_string: str, target_unit: str, append_unit: bool=False) -> str:
+    """
+    Converts a duration string from one unit to another.
+
+    Args:
+        duration_string: A string representing the duration, e.g., "10s", "2m", "3H", "5D", "1W", "0.5M".
+                         Supported units: 's' (seconds), 'm' (minutes), 'H' (hours),
+                         'D' (days), 'W' (weeks), 'M' (months).
+        target_unit: The unit to convert to. Supported units are the same as above.
+
+    Returns:
+        The converted duration as a string.
+
+    Raises:
+        ValueError: If the input string format is invalid, units are unknown,
+                    or conversion is not possible.
+    """
+    
+    # Define conversion factors to a base unit (seconds)
+    # Note: 'M' (months) is approximated as 30 days for simplicity.
+    # For precise month conversions, a specific date context would be needed.
+    unit_to_seconds = {
+        's': 1,
+        'm': 60,
+        'H': 60 * 60,
+        'D': 24 * 60 * 60,
+        'W': 7 * 24 * 60 * 60,
+        'M': 30 * 24 * 60 * 60  # Approximation for months
+    }
+
+    # Validate target unit
+    if target_unit not in unit_to_seconds:
+        raise ValueError(f"Unknown target unit: '{target_unit}'. "
+                         "Supported units are 's', 'm', 'H', 'D', 'W', 'M'.")
+
+    # Regular expression to parse the duration string
+    # It captures a number (integer or float) and then the unit character(s)
+    match = re.match(r"(\d+(\.\d+)?)([smHDWM])", duration_string)
+
+    if not match:
+        raise ValueError(f"Invalid duration string format: '{duration_string}'. "
+                         "Expected format: <number><unit>, e.g., '10s', '2.5H'.")
+
+    value_str = match.group(1)
+    input_unit = match.group(3)
+
+    try:
+        value = float(value_str)
+    except ValueError:
+        # This should ideally be caught by the regex, but as a safeguard
+        raise ValueError(f"Could not parse numerical value from '{value_str}'.")
+
+    if input_unit not in unit_to_seconds:
+        raise ValueError(f"Unknown input unit: '{input_unit}'. "
+                         "Supported units are 's', 'm', 'H', 'D', 'W', 'M'.")
+
+    # Convert the input duration to seconds
+    duration_in_seconds = value * unit_to_seconds[input_unit]
+
+    # Convert from seconds to the target unit
+    if unit_to_seconds[target_unit] == 0:
+        # This case should not happen with the current unit_to_seconds,
+        # but is a good safeguard against division by zero if factors change.
+        raise ValueError(f"Conversion factor for target unit '{target_unit}' is zero, cannot convert.")
+
+    converted_duration = duration_in_seconds / unit_to_seconds[target_unit]
+
+    return f'{converted_duration:.2f} {target_unit}' if append_unit else f'{converted_duration:.2f}'
 
 
 def get_report_outfile(reportname, prefix=''):
