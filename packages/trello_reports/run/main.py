@@ -8,9 +8,9 @@ import argparse
 import sys
 from os import environ
 from version import __version__, __commit__
-#import items_report
 
 sys.path.insert(0, 'lib/')
+import curator_report
 import functions as f
 import secrets
 
@@ -56,11 +56,10 @@ def run(args):
     result = ''
     if 'curators' in args.report:
         print('Running "curators" report')
-        result = f.get_report_date()
-        # data = curator_report.run(args)
-        # result = result + f'Running "curator" report completed. {len(data)} curators.'
-        # if args.sync_to_dashboard:
-        #    result = result + f'\nSyncing "curator" to dashboard completed. Result: {f.sync_to_dashboard(data, "curator")}.'
+        data = curator_report.run(args)
+        result = result + f'Running "curator" report completed. {len(data)} curators.'
+        if args.sync_to_dashboard:
+           result = result + f'\nSyncing "curator" to dashboard completed. Result: {f.sync_to_dashboard(data, "curator")}.'
     if 'items' in args.report:
         print('Running "items" report')
         result = 'not implemented'
@@ -74,6 +73,8 @@ if __name__ == '__main__':
     environ['API_TRELLO_URL_BASE'] = secrets.api_trello_url_base
     environ['API_TRELLO_KEY'] = secrets.api_trello_key
     environ['API_TRELLO_TOKEN'] = secrets.api_trello_token
+    environ['TRELLO_BOARD_ID'] = secrets.trello_board_id
+    environ['TRELLO_PUBLISHEDLIST_ID'] = secrets.trello_publishedlist_id
     environ['GSHEETS_DASHBOARD_POST_URL'] = secrets.gsheets_dashboard_post_url
     environ['GSHEETS_DASHBOARD_KEY'] = secrets.gsheets_dashboard_key
     environ['TOKEN'] = secrets.do_token
