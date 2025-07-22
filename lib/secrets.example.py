@@ -12,6 +12,8 @@ api_figshare_token = ''
 api_trello_url_base = ''
 api_trello_key = ''
 api_trello_token = ''
+trello_board_id = ''
+trello_publishedlist_id = ''
 
 # Google sheet
 gsheets_dashboard_post_url = ''
