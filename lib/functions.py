@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from os import environ
 import requests
 import re
@@ -24,6 +24,21 @@ def get_report_date():
     if not report_date:
         report_date = datetime.now()
     return report_date
+
+
+def get_cardlist_filter():
+    """
+    Returns a dict containing a filter to be used with board.list_cards(), along with a description.
+    Refer to https://developer.atlassian.com/cloud/trello/guides/rest-api/nested-resources/#cards-nested-resource 
+    for available filters.
+    """
+
+    # Limit to this for now since that's as far back as old cards have been updated
+    since = date(2025, 1, 1)
+
+    # To limit the number of results for testing, add limit parameter to the query. E.g., 'limit': '5'
+    return {'query': {'since': since.strftime('%a %d %b %Y')}, 
+            'description': f'Since {since.strftime('%a %d %b %Y')}'}
 
 
 def sync_to_dashboard(data, report):
