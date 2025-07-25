@@ -8,10 +8,13 @@
 #
 # Author: Fernando Rios
 
+import sys
 import requests
 import simplejson as json
 from multiprocessing import Pool
 from os import environ
+
+sys.path.insert(0, 'lib/')
 import functions as f
 
 
@@ -19,7 +22,7 @@ def get_institution_accounts():
     page = 1
     accounts_list = []
     while True:
-        api_url = '{0}/account/institution/accounts?page={1}&page_size=1000'.format(environ['API_URL_BASE'], page)
+        api_url = '{0}/account/institution/accounts?page={1}&page_size=1000'.format(environ['API_FIGSHARE_URL_BASE'], page)
         page += 1
         response = requests.get(api_url, headers=f.get_request_headers())
 
@@ -33,14 +36,14 @@ def get_institution_accounts():
 
 
 def get_account_info(id):
-    api_url = '{0}/account?impersonate={1}'.format(environ['API_URL_BASE'], id)
+    api_url = '{0}/account?impersonate={1}'.format(environ['API_FIGSHARE_URL_BASE'], id)
     response = requests.get(api_url, headers=f.get_request_headers())
 
     if response.status_code == 200:
         data = json.loads(response.text)
     elif response.status_code == 403:
         # can't impersonate ourselves
-        api_url = '{0}/account'.format(environ['API_URL_BASE'])
+        api_url = '{0}/account'.format(environ['API_FIGSHARE_URL_BASE'])
         response = requests.get(api_url, headers=f.get_request_headers())
         data = json.loads(response.text)
     else:
