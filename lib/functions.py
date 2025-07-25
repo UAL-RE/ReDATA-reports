@@ -33,12 +33,9 @@ def get_cardlist_filter():
     for available filters.
     """
 
-    # Limit to this for now since that's as far back as old cards have been updated
-    since = date(2025, 1, 1)
-
     # To limit the number of results for testing, add limit parameter to the query. E.g., 'limit': '5'
-    return {'query': {'since': since.strftime('%a %d %b %Y')}, 
-            'description': f'Since {since.strftime('%a %d %b %Y')}'}
+    return {'query': {'customFieldItems': 'true'}, 
+            'description': f'since the beginning'}
 
 
 def sync_to_dashboard(data, report):

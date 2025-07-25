@@ -116,6 +116,7 @@ def curator_items_time(existing_curators: dict[str, any], curators_field_prefix:
         customfields[field.name] = field.value
 
     include_card = False
+    filter_result = 'NoFilter'
     if not cardfilter:
         include_card = True
     else:
@@ -142,9 +143,9 @@ def curator_items_time(existing_curators: dict[str, any], curators_field_prefix:
                     print(f'    {name} filter: result={filter_result[name]} | card_pubdate={str(pubdate)} >= cutoff_date={str(cutoffdate)}')
             include_card = all(filter_result.values())
 
-        # uncomment for debugging
-        print(f'    include_card: {include_card} | {filter_result}')
-        print('     ---')
+    # uncomment for debugging
+    print(f'    include_card: {include_card} | {filter_result}')
+    print('     ---')
 
     if include_card:
         for username, curator in existing_curators.items():
@@ -152,6 +153,7 @@ def curator_items_time(existing_curators: dict[str, any], curators_field_prefix:
             for fieldname, fieldvalue in customfields.items():
                 if 'reviewer_' in fieldname and username in fieldvalue:
                     curator[curators_field_prefix + '_items'] += 1
+                    if 'reviewer_1' in fieldname: curator[curators_field_prefix + '_reviewer1_items'] += 1
 
             # Time for each curator, based on card filter criteria
             curator[curators_field_prefix + '_time'] += get_card_time(card, curator['id'])
@@ -268,10 +270,30 @@ def run(args):
 
     try:
         board = tc.get_board(environ['TRELLO_BOARD_ID'])
-        published_list = board.get_list(environ['TRELLO_PUBLISHEDLIST_ID'])
-        cards = published_list.list_cards(query=f.get_cardlist_filter()['query'])
+        cards = board.get_cards(filters=f.get_cardlist_filter()['query'])
 
+        # Preprocess board cards to filter out the ones without published_date set.
+        # Do it this way instead of by returning only cards from the Published list so that
+        # we grab cards in other lists that may have been published already but have been moved to another list.
+        publishedcards = []
+        fl = None
+        
+        # Uncomment to write the cards with published_date set to file for debugging purposes
+        # fl = open('publishedcards.csv', 'w',  encoding="utf-8")
+        
+        if fl: fl.write('name,published_date\n') 
         for card in cards:
+            keep = False
+            for field in card.custom_fields:
+                if field.name == 'published_date' and not field.value == '':
+                    keep = True
+                    break
+            if keep:
+                publishedcards.append(card)
+                if fl: fl.write(f'"{card.name.replace('"','""')}","{field.value}"\n')
+        if fl: fl.close()
+        
+        for card in publishedcards:
             # Preprocess the card to get the reviewers
             get_card_curators(card, curators)
 
@@ -304,7 +326,8 @@ def run(args):
         print(f'Error getting board info: {e}, line {line_number}')
         return {}
 
-    print(f'Curation stats for items (and versions) published since {f.get_cardlist_filter()['description']}')
+    print(f'Curation stats for items (and versions) published {f.get_cardlist_filter()['description']}')
+    print(f'Processed {len(publishedcards)} cards with published_date set, out of {len(cards)} fetched')
 
     outfile = None
     if args.outfile:
@@ -377,7 +400,7 @@ def run(args):
             print(s)
 
     print()
-    print(f'Total curation hours:\t\t\t\t{f.format_duration(str(total_time)+'s', 'H')}')
+    print(f'Total curation hours:\t{f.format_duration(str(total_time)+'s', 'H')}')
     print(f'Avg hours per item:\t{f.format_duration(str(total_time/total_items)+'s', 'H')}')
 
     if outfile:

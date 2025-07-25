@@ -26,7 +26,6 @@ packages:
           API_TRELLO_KEY: ${api_trello_key}
           API_TRELLO_TOKEN: ${api_trello_token}
           TRELLO_BOARD_ID: ${trello_board_id}
-          TRELLO_PUBLISHEDLIST_ID: ${trello_publishedlist_id}
           GSHEETS_DASHBOARD_POST_URL: ${gsheets_dashboard_post_url}
           GSHEETS_DASHBOARD_KEY: ${gsheets_dashboard_key}
           TOKEN: ${do_token}
