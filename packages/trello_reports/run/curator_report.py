@@ -7,7 +7,7 @@
 import sys
 import traceback
 from ast import literal_eval
-from datetime import date, datetime
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -22,19 +22,16 @@ tc = None
 currdate = datetime.now(tzlocal())
 
 
-
-
-def get_card_curators(card, existing_curators: dict[str, any]=None):
+def get_card_curators(card, existing_curators: dict[str, any] = None):
     """
     Returns the curators for the given Card object as a list of Trello usernames.
-    
-    If the existing_curators dictionary is passed in, if a curator is found that does not exist in the 
+
+    If the existing_curators dictionary is passed in, if a curator is found that does not exist in the
     dictionary, a new entry is created with the key equal to the value of the reviewer_N custom field (N is an integer).
     Currently it is the value of the Trello username.
     """
-    
+
     curators = []
-    global tc
 
     print(card.name)
     for field in card.custom_fields:
@@ -46,25 +43,43 @@ def get_card_curators(card, existing_curators: dict[str, any]=None):
             if type(existing_curators) is dict and field.value not in existing_curators:
                 # Add a new curator to the list if they're not already there
                 # The value of the reviewer_x custom field in trello must be a trello username
-                existing_curators[field.value] = {'id': '', 'total_items': 0, 'total_time': 0,
-                                         'easy_items': 0, 'easy_time': 0, 'med_items': 0, 'med_time': 0,'hard_items': 0, 'hard_time': 0,
-                                         '3M_items' :0, '3M_time': 0,
-                                         '6M_items' :0, '6M_time': 0,
-                                         '1Y_items' :0, '1Y_time': 0,
-                                         '2Y_items' :0, '2Y_time': 0,
-                                         '3M_easy_items': 0, '3M_easy_time': 0,
-                                         '3M_med_items': 0, '3M_med_time': 0,
-                                         '3M_hard_items': 0, '3M_hard_time': 0,
-                                         '6M_easy_items': 0, '6M_easy_time': 0,
-                                         '6M_med_items': 0, '6M_med_time': 0,
-                                         '6M_hard_items': 0, '6M_hard_time': 0,
-                                         '1Y_easy_items': 0, '1Y_easy_time': 0,
-                                         '1Y_med_items': 0, '1Y_med_time': 0,
-                                         '1Y_hard_items': 0, '1Y_hard_time': 0,
-                                         '2Y_easy_items': 0, '2Y_easy_time': 0,
-                                         '2Y_med_items': 0, '2Y_med_time': 0,
-                                         '2Y_hard_items': 0, '2Y_hard_time': 0}
-                
+                existing_curators[field.value] = {
+                    'id': '', 'total_items': 0, 'total_time': 0,
+                    'easy_items': 0, 'easy_time': 0, 'med_items': 0, 'med_time': 0,'hard_items': 0, 'hard_time': 0,
+                    '3M_items': 0, '3M_time': 0,
+                    '6M_items': 0, '6M_time': 0,
+                    '1Y_items': 0, '1Y_time': 0,
+                    '2Y_items' :0, '2Y_time': 0,
+                    '3M_easy_items': 0, '3M_easy_time': 0,
+                    '3M_med_items': 0, '3M_med_time': 0,
+                    '3M_hard_items': 0, '3M_hard_time': 0,
+                    '6M_easy_items': 0, '6M_easy_time': 0,
+                    '6M_med_items': 0, '6M_med_time': 0,
+                    '6M_hard_items': 0, '6M_hard_time': 0,
+                    '1Y_easy_items': 0, '1Y_easy_time': 0,
+                    '1Y_med_items': 0, '1Y_med_time': 0,
+                    '1Y_hard_items': 0, '1Y_hard_time': 0,
+                    '2Y_easy_items': 0, '2Y_easy_time': 0,
+                    '2Y_med_items': 0, '2Y_med_time': 0,
+                    '2Y_hard_items': 0, '2Y_hard_time': 0,
+                    'total_reviewer1_items': 0, 'total_reviewer1_time': 0,
+                    'total_reviewer2_items': 0, 'total_reviewer2_time': 0,
+                    'easy_reviewer1_items': 0, 'easy_reviewer1_time': 0,
+                    'easy_reviewer2_items': 0, 'easy_reviewer2_time': 0,
+                    'med_reviewer1_items': 0, 'med_reviewer1_time': 0,
+                    'med_reviewer2_items': 0, 'med_reviewer2_time': 0,
+                    'hard_reviewer1_items': 0, 'hard_reviewer1_time': 0,
+                    'hard_reviewer2_items': 0, 'hard_reviewer2_time': 0,
+                    '3M_reviewer1_items': 0, '3M_reviewer1_time': 0,
+                    '3M_reviewer2_items': 0, '3M_reviewer2_time': 0,
+                    '6M_reviewer1_items': 0, '6M_reviewer1_time': 0,
+                    '6M_reviewer2_items': 0, '6M_reviewer2_time': 0,
+                    '1Y_reviewer1_items': 0, '1Y_reviewer1_time': 0,
+                    '1Y_reviewer2_items': 0, '1Y_reviewer2_time': 0,
+                    '2Y_reviewer1_items': 0, '2Y_reviewer1_time': 0,
+                    '2Y_reviewer2_items': 0, '2Y_reviewer2_time': 0
+                }
+
                 for member in tc.get_board(card.board_id).all_members():
                     # Extract the id from the username
                     if member.username == field.value:
@@ -277,7 +292,7 @@ def run(args):
         # we grab cards in other lists that may have been published already but have been moved to another list.
         publishedcards = []
         fl = None
-        
+
         # Uncomment to write the cards with published_date set to file for debugging purposes
         # fl = open('publishedcards.csv', 'w',  encoding="utf-8")
         
@@ -292,7 +307,7 @@ def run(args):
                 publishedcards.append(card)
                 if fl: fl.write(f'"{card.name.replace('"','""')}","{field.value}"\n')
         if fl: fl.close()
-        
+
         for card in publishedcards:
             # Preprocess the card to get the reviewers
             get_card_curators(card, curators)
