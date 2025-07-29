@@ -57,12 +57,13 @@ def run(args):
     if 'curators' in args.report:
         print('Running "curators" report')
         data = curator_report.run(args)
-        result = result + f'Running "curator" report completed. {len(data)} curators.'
+        result = result + f'Running "curators" report completed. {len(data)} curators found.'
         if args.sync_to_dashboard:
-            result = result + f'\nSyncing "curator" to dashboard completed. Result: {f.sync_to_dashboard(data, "curator")}.'
+            result = result + f'\nSyncing "curator" to dashboard completed. Result: {f.sync_to_dashboard(data, "curators")}.'
     if 'items' in args.report:
-        print('Running "items" report')
-        result = 'not implemented'
+        print('Running "cards" report')
+        if args.sync_to_dashboard:
+            result = result + '\nSyncing "cards" to dashboard completed. Result: Not implemented.'
 
     return result
 

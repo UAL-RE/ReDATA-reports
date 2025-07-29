@@ -2,7 +2,7 @@ packages:
   - name: redata_reports
     functions:
       - name: run
-        runtime: 'python:default'
+        runtime: 'python:3.11'
         web: true
         limits:
           timeout: 420000
@@ -16,7 +16,7 @@ packages:
   - name: trello_reports
     functions:
       - name: run
-        runtime: 'python:default'
+        runtime: 'python:3.11'
         web: true
         limits:
           timeout: 420000

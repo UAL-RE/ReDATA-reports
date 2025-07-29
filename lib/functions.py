@@ -41,7 +41,10 @@ def get_cardlist_filter():
 
 def sync_to_dashboard(data, report):
     """
-    Sends the given data to the Google Sheet given by report via the sheet's POST request url
+    Sends the given data to the Google Sheet given by `report` via the sheet's POST request url.
+    
+    data: a list of dictionaries corresponding to 1 row of data.
+    report: the name of the sheet to put the data.
     """
     print(f'Sending data for report "{report}" to dashboard')
 

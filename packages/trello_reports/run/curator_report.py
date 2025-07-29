@@ -35,7 +35,7 @@ def get_card_curators(card, existing_curators: dict[str, any] = None):
 
     if debug > 0:
         print(card.name)
-    
+
     for field in card.custom_fields:
         if 'reviewer_' in field.name:
             if debug > 1:
@@ -47,7 +47,7 @@ def get_card_curators(card, existing_curators: dict[str, any] = None):
                 # Add a new curator to the list if they're not already there
                 # The value of the reviewer_x custom field in trello must be a trello username
                 existing_curators[field.value] = {
-                    'id': '', 'total_items': 0, 'total_time': 0,
+                    'username': field.value, 'id': '', 'total_items': 0, 'total_time': 0,
                     'easy_items': 0, 'easy_time': 0, 'med_items': 0, 'med_time': 0, 'hard_items': 0, 'hard_time': 0,
                     '3M_items': 0, '3M_time': 0,
                     '6M_items': 0, '6M_time': 0,
@@ -104,7 +104,8 @@ def get_card_curators(card, existing_curators: dict[str, any] = None):
                     '1Y_hard_reviewer1_items': 0, '1Y_hard_reviewer1_time': 0,
                     '1Y_hard_reviewer2_items': 0, '1Y_hard_reviewer2_time': 0,
                     '2Y_hard_reviewer1_items': 0, '2Y_hard_reviewer1_time': 0,
-                    '2Y_hard_reviewer2_items': 0, '2Y_hard_reviewer2_time': 0
+                    '2Y_hard_reviewer2_items': 0, '2Y_hard_reviewer2_time': 0,
+                    'report_date': f.get_report_date().strftime('%Y-%m-%d %H:%M:%S')
                 }
 
                 for member in tc.get_board(card.board_id).all_members():
@@ -175,7 +176,7 @@ def curator_items_time(existing_curators: dict[str, any], curators_field_prefix:
 
                     if debug > 2:
                         print(f'      {name} filter: result={filter_result[name]} | '
-                             + f'requested_difficulty={value} card_difficulty={customfields[name] if name in customfields.keys() else ''}')
+                              + f'requested_difficulty={value} card_difficulty={customfields[name] if name in customfields.keys() else None }')
                 case 'published_date':
                     pubdate = ''
                     cutoffdate = ''
@@ -187,7 +188,7 @@ def curator_items_time(existing_curators: dict[str, any], curators_field_prefix:
 
                     if debug > 2:
                         print(f'      {name} filter: result={filter_result[name]} | '
-                             + f'card_pubdate={str(pubdate)} >= cutoff_date={str(cutoffdate)}')
+                              + f'card_pubdate={str(pubdate)} >= cutoff_date={str(cutoffdate)}')
                 case 'reviewer_1' | 'reviewer_2':
                     if name in customfields.keys():
                         filter_result[name] = True
@@ -351,9 +352,11 @@ def run(args):
         publishedcards = []
         fl = None
 
-        if debug > 0: fl = open('cards.csv', 'w',  encoding="utf-8")
+        if debug > 0:
+            fl = open('cards.csv', 'w', encoding="utf-8")
 
-        if fl: fl.write(
+        if fl:
+            fl.write(
                 'name,difficulty,total_time_mins,article_version,article_revision,'
                 + 'reviewer_1,reviewer_2,submission_date,forms_sent_date,reviewed_date,published_date,keep?\n')
         for card in cards:
@@ -366,16 +369,18 @@ def run(args):
             if keep:
                 publishedcards.append(card)
 
-            if fl: fl.write(
-                f'"{card.name.replace('"','""')}",'
-                + f'{customfields.get('difficulty', '""')},'
-                + f'{customfields.get('total_time_mins', '""')},'
-                + f'{customfields.get('article_version', '""')},{customfields.get('article_revision', '""')},'
-                + f'{customfields.get('reviewer_1', '""')},{customfields.get('reviewer_2', '""')},'
-                + f'{customfields.get('submission_date', '""')},{customfields.get('forms_sent_date', '""')},'
-                + f'{customfields.get('reviewed_date', '""')},{customfields.get('published_date', '""')},'
-                + f'{keep}\n')
-        if fl: fl.close()
+            if fl:
+                fl.write(
+                    '"' + card.name.replace('"', '""') + '",'
+                    + customfields.get('difficulty', '""') + ','
+                    + str(customfields.get('total_time_mins', '""')) + ','
+                    + str(customfields.get('article_version', '""')) + ',' + str(customfields.get('article_revision', '""')) + ','
+                    + str(customfields.get('reviewer_1', '""')) + ',' + str(customfields.get('reviewer_2', '""')) + ','
+                    + str(customfields.get('submission_date', '""')) + ',' + str(customfields.get('forms_sent_date', '""')) + ','
+                    + str(customfields.get('reviewed_date', '""')) + ',' + str(customfields.get('published_date', '""')) + ','
+                    + f'{keep}\n')
+        if fl:
+            fl.close()
 
         for card in publishedcards:
             # Preprocess the card to get the reviewers
@@ -403,14 +408,13 @@ def run(args):
             curator_2y_hard_items_time(curators, card)
         print()
 
-
     except Exception as e:
         tb_list = traceback.extract_tb(sys.exc_info()[2])
         line_number = tb_list[-1][1]
         print(f'Error getting board data: {e}, line {line_number}')
         return {}
 
-    print(f'Curation stats for items (and versions) published {f.get_cardlist_filter()['description']}')
+    print(f'Curation stats for items (and versions) published {f.get_cardlist_filter()["description"]}')
     print(f'Processed {len(publishedcards)} cards with published_date set, out of {len(cards)} fetched')
 
     outfile = None
@@ -427,43 +431,43 @@ def run(args):
             + f'1Y_easy_items,1Y_easy_time ({args.units}),1Y_med_items,1Y_med_time ({args.units}),'
             + f'1Y_hard_items,1Y_hard_time ({args.units}),2Y_easy_items,2Y_easy_time ({args.units}),'
             + f'2Y_med_items,2Y_med_time ({args.units}),2Y_hard_items,2Y_hard_time ({args.units}),'
-            + f'total_reviewer_1_items,total_reviewer_1_time ({args.units}),'
-            + f'total_reviewer_2_items,total_reviewer_2_time ({args.units}),'
-            + f'3M_reviewer_1_items,3M_reviewer_1_time ({args.units}),'
-            + f'3M_reviewer_2_items,3M_reviewer_2_time ({args.units}),'
-            + f'6M_reviewer_1_items,6M_reviewer_1_time ({args.units}),'
-            + f'6M_reviewer_2_items,6M_reviewer_2_time ({args.units}),'
-            + f'1Y_reviewer_1_items,1Y_reviewer_1_time ({args.units}),'
-            + f'1Y_reviewer_2_items,1Y_reviewer_2_time ({args.units}),'
-            + f'2Y_reviewer_1_items,2Y_reviewer_1_time ({args.units}),'
-            + f'2Y_reviewer_2_items,2Y_reviewer_2_time ({args.units}),'
-            + f'3M_easy_reviewer_1_items,3M_easy_reviewer_1_time ({args.units}),'
-            + f'3M_easy_reviewer_2_items,3M_easy_reviewer_2_time ({args.units}),'
-            + f'3M_med_reviewer_1_items,3M_med_reviewer_1_time ({args.units}),'
-            + f'3M_med_reviewer_2_items,3M_med_reviewer_2_time ({args.units}),'
-            + f'3M_hard_reviewer_1_items,3M_hard_reviewer_1_time ({args.units}),'
-            + f'3M_hard_reviewer_2_items,3M_hard_reviewer_2_time ({args.units}),'
-            + f'6M_easy_reviewer_1_items,6M_easy_reviewer_1_time ({args.units}),'
-            + f'6M_easy_reviewer_2_items,6M_easy_reviewer_2_time ({args.units}),'
-            + f'6M_med_reviewer_1_items,6M_med_reviewer_1_time ({args.units}),'
-            + f'6M_med_reviewer_2_items,6M_med_reviewer_2_time ({args.units}),'
-            + f'6M_hard_reviewer_1_items,6M_hard_reviewer_1_time ({args.units}),'
-            + f'6M_hard_reviewer_2_items,6M_hard_reviewer_2_time ({args.units}),'
-            + f'1Y_easy_reviewer_1_items,1Y_easy_reviewer_1_time ({args.units}),'
-            + f'1Y_easy_reviewer_2_items,1Y_easy_reviewer_2_time ({args.units}),'
-            + f'1Y_med_reviewer_1_items,1Y_med_reviewer_1_time ({args.units}),'
-            + f'1Y_med_reviewer_2_items,1Y_med_reviewer_2_time ({args.units}),'
-            + f'1Y_hard_reviewer_1_items,1Y_hard_reviewer_1_time ({args.units}),'
-            + f'1Y_hard_reviewer_2_items,1Y_hard_reviewer_2_time ({args.units}),'
-            + f'2Y_easy_reviewer_1_items,2Y_easy_reviewer_1_time ({args.units}),'
-            + f'2Y_easy_reviewer_2_items,2Y_easy_reviewer_2_time ({args.units}),'
-            + f'2Y_med_reviewer_1_items,2Y_med_reviewer_1_time ({args.units}),'
-            + f'2Y_med_reviewer_2_items,2Y_med_reviewer_2_time ({args.units}),'
-            + f'2Y_hard_reviewer_1_items,2Y_hard_reviewer_1_time ({args.units}),'
-            + f'2Y_hard_reviewer_2_items,2Y_hard_reviewer_2_time ({args.units}),'
+            + f'total_reviewer1_items,total_reviewer1_time ({args.units}),'
+            + f'total_reviewer2_items,total_reviewer2_time ({args.units}),'
+            + f'3M_reviewer1_items,3M_reviewer1_time ({args.units}),'
+            + f'3M_reviewer2_items,3M_reviewer2_time ({args.units}),'
+            + f'6M_reviewer1_items,6M_reviewer1_time ({args.units}),'
+            + f'6M_reviewer2_items,6M_reviewer2_time ({args.units}),'
+            + f'1Y_reviewer1_items,1Y_reviewer1_time ({args.units}),'
+            + f'1Y_reviewer2_items,1Y_reviewer2_time ({args.units}),'
+            + f'2Y_reviewer1_items,2Y_reviewer1_time ({args.units}),'
+            + f'2Y_reviewer2_items,2Y_reviewer2_time ({args.units}),'
+            + f'3M_easy_reviewer1_items,3M_easy_reviewer1_time ({args.units}),'
+            + f'3M_easy_reviewer2_items,3M_easy_reviewer2_time ({args.units}),'
+            + f'3M_med_reviewer1_items,3M_med_reviewer1_time ({args.units}),'
+            + f'3M_med_reviewer2_items,3M_med_reviewer2_time ({args.units}),'
+            + f'3M_hard_reviewer1_items,3M_hard_reviewer1_time ({args.units}),'
+            + f'3M_hard_reviewer2_items,3M_hard_reviewer2_time ({args.units}),'
+            + f'6M_easy_reviewer1_items,6M_easy_reviewer1_time ({args.units}),'
+            + f'6M_easy_reviewer2_items,6M_easy_reviewer2_time ({args.units}),'
+            + f'6M_med_reviewer1_items,6M_med_reviewer1_time ({args.units}),'
+            + f'6M_med_reviewer2_items,6M_med_reviewer2_time ({args.units}),'
+            + f'6M_hard_reviewer1_items,6M_hard_reviewer1_time ({args.units}),'
+            + f'6M_hard_reviewer2_items,6M_hard_reviewer2_time ({args.units}),'
+            + f'1Y_easy_reviewer1_items,1Y_easy_reviewer1_time ({args.units}),'
+            + f'1Y_easy_reviewer2_items,1Y_easy_reviewer2_time ({args.units}),'
+            + f'1Y_med_reviewer1_items,1Y_med_reviewer1_time ({args.units}),'
+            + f'1Y_med_reviewer2_items,1Y_med_reviewer2_time ({args.units}),'
+            + f'1Y_hard_reviewer1_items,1Y_hard_reviewer1_time ({args.units}),'
+            + f'1Y_hard_reviewer2_items,1Y_hard_reviewer2_time ({args.units}),'
+            + f'2Y_easy_reviewer1_items,2Y_easy_reviewer1_time ({args.units}),'
+            + f'2Y_easy_reviewer2_items,2Y_easy_reviewer2_time ({args.units}),'
+            + f'2Y_med_reviewer1_items,2Y_med_reviewer1_time ({args.units}),'
+            + f'2Y_med_reviewer2_items,2Y_med_reviewer2_time ({args.units}),'
+            + f'2Y_hard_reviewer1_items,2Y_hard_reviewer1_time ({args.units}),'
+            + f'2Y_hard_reviewer2_items,2Y_hard_reviewer2_time ({args.units}),'
             + '\n')
 
-    else:
+    elif not args.sync_to_dashboard:
         print(
             f'username\ttot_itms\ttot_tm({args.units})\tlast 3m itms\tlast 3m tm({args.units})'
             + f' rvwr1_itms rvwr1_tm({args.units})'
@@ -475,7 +479,7 @@ def run(args):
     for username, curator in curators.items():
         if outfile:
             s = (
-                '{0},{1},{2},'              # username, total items, total time
+                '{0},{1},{2},'               # username, total items, total time
                 + '{3},{4},{5},{6},{7},{8},' # easy, med, hard items & time
                 + '{9},{10},{11},{12},'      # 3M, 6M items & time
                 + '{13},{14},{15},{16},'     # 1Y, 2Y items & time
@@ -576,10 +580,10 @@ def run(args):
             print(s)
 
     print()
-    print(f'Total curation hours:\t{f.format_duration(str(total_time)+'s', 'H')}')
-    print(f'Avg hours per item:\t{f.format_duration(str(total_time/total_items)+'s', 'H')}')
+    print(f'Total curation hours:\t{f.format_duration(str(total_time) + "s", "H")}')
+    print(f'Avg hours per item:\t{f.format_duration(str(total_time/total_items) + "s", "H")}')
 
     if outfile:
         outfile.close()
 
-    return curators
+    return list(curators.values())

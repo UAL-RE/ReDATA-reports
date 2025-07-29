@@ -9,6 +9,7 @@ This Sheet accepts data from the report generator via a POST and stores it for u
 	1. `Readme` (optional)
 	1. `items`. Create columns exactly matching the name and order of the keys in the `articles` dictionary from [`items_report.py`](../packages/redata_reports/run/items_report.py)
 	1. `users`. Create columns exactly matching the name and order of the keys in the `account_info` dictionary from [`userquota_report.py`](../packages/redata_reports/run/userquota_report.py)
+	1. `curators`. Create columns exactly matching the name and order of the `curators` dictionary from [`curators_report.py`](../packages/trello_reports/run/curators_report.py)
 
 ## WebApp
 
