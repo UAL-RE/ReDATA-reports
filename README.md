@@ -19,7 +19,12 @@ Show the command line options by running
 python ./packages/redata_reports/run/main.py -h
 ```
 
-Prior to generating any reports, configure API endpoints and keys. Copy [`./packages/redata_reports/run/secrets.example.py`](packages/redata_reports/run/secrets.example.py) to `./packages/redata_reports/run/secrets.py` and edit the fields with the appropriate values. See the comments in that file for specific instructions. To generate reports locally, only the Figshare API credentials are needed.
+or
+```
+python ./packages/trello_reports/run/main.py -h
+```
+
+Prior to generating any reports, configure API endpoints and keys. Copy [`./lib/secrets.example.py`](lib/secrets.example.py) to `./lib/secrets.py` and edit the fields with the appropriate values. See the comments in that file for specific instructions. To generate reports locally, Google Sheets and DigitalOcean credentials are not needed.
 
 Generate a report. E.g the users report. A CSV will be output in the current working directory in this example.
 ```
@@ -30,7 +35,7 @@ python ./packages/redata_reports/run/main.py -r users -o
 
 The `--sync-to-dashboard` option uploads data to the Google dashboard (data is stored in a Google Sheet and displayed in a Looker Studio dashboard). Setting this flag includes `-u B -r items -r users`. The destination sheet is configured in `secrets.py`. 
 
-Prior to using `--sync-to-dashboard`, the target Google Sheet must be set up. See the [readme](gsheet_webapp/README.md) in `gsheet_webapp`. Once that is done, run:
+Prior to using `--sync-to-dashboard`, the target Google Sheet must be set up. See the [readme](gsheet_webapp/README.md) in `gsheet_webapp`. Once that is done, run (for example):
 ```
 python packages/redata_reports/main.py --sync-to-dashboard
 ```
