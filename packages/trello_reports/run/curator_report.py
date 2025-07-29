@@ -176,7 +176,7 @@ def curator_items_time(existing_curators: dict[str, any], curators_field_prefix:
 
                     if debug > 2:
                         print(f'      {name} filter: result={filter_result[name]} | '
-                              + f'requested_difficulty={value} card_difficulty={customfields[name] if name in customfields.keys() else None }')
+                              + f'requested_difficulty={value} card_difficulty={customfields[name] if name in customfields.keys() else None}')
                 case 'published_date':
                     pubdate = ''
                     cutoffdate = ''
@@ -479,96 +479,96 @@ def run(args):
     for username, curator in curators.items():
         if outfile:
             s = (
-                '{0},{1},{2},'               # username, total items, total time
-                + '{3},{4},{5},{6},{7},{8},' # easy, med, hard items & time
-                + '{9},{10},{11},{12},'      # 3M, 6M items & time
-                + '{13},{14},{15},{16},'     # 1Y, 2Y items & time
-                + '{17},{18},{19},{20},'     # 3M_easy, 3M_med items & time
-                + '{21},{22},{23},{24},'     # 3M_hard, 6M_easy items & time
-                + '{25},{26},{27},{28},'     # 6M_med, 6M_hard items & time
-                + '{29},{30},{31},{32},'     # 1Y_easy, 1Y_med items & time
-                + '{33},{34},{35},{36},'     # 1Y_hard, 2Y_easy items & time
-                + '{37},{38},{39},{40},'     # 2Y_med, 2Y_hard items & time
-                + '{41},{42},{43},{44},'     # total reviewer_1, reviewer_2 items & time
-                + '{45},{46},{47},{48},'     # 3M reviewer_1, reviewer_2 items & time
-                + '{49},{50},{51},{52},'     # 6M reviewer_1, reviewer_2 items & time
-                + '{53},{54},{55},{56},'     # 1Y reviewer_1, reviewer_2 items & time
-                + '{57},{58},{59},{60},'     # 2Y reviewer_1, reviewer_2 items & time
-                + '{61},{62},{63},{64},'     # 3M_easy reviewer_1, reviewer_2 items & time
-                + '{65},{66},{67},{68},'     # 3M_med reviewer_1, reviewer_2 items & time
-                + '{69},{70},{71},{72},'     # 3M_hard reviewer_1, reviewer_2 items & time
-                + '{73},{74},{75},{76},'     # 6M_easy reviewer_1, reviewer_2 items & time
-                + '{77},{78},{79},{80},'     # 6M_med reviewer_1, reviewer_2 items & time
-                + '{81},{82},{83},{84},'     # 6M_hard reviewer_1, reviewer_2 items & time
-                + '{85},{86},{87},{88},'     # 1Y_easy reviewer_1, reviewer_2 items & time
-                + '{89},{90},{91},{92},'     # 1Y_med reviewer_1, reviewer_2 items & time
-                + '{93},{94},{95},{96},'     # 1Y_hard reviewer_1, reviewer_2 items & time
-                + '{97},{98},{99},{100},'    # 2Y_easy reviewer_1, reviewer_2 items & time
-                + '{101},{102},{103},{104},' # 2Y_med reviewer_1, reviewer_2 items & time
-                + '{105},{106},{107},{108}' # 2Y_hard reviewer_1, reviewer_2 items & time
+                 '{0},{1},{2},'                # username, total items, total time
+                 + '{3},{4},{5},{6},{7},{8},'  # easy, med, hard items & time
+                 + '{9},{10},{11},{12},'       # 3M, 6M items & time
+                 + '{13},{14},{15},{16},'      # 1Y, 2Y items & time
+                 + '{17},{18},{19},{20},'      # 3M_easy, 3M_med items & time
+                 + '{21},{22},{23},{24},'      # 3M_hard, 6M_easy items & time
+                 + '{25},{26},{27},{28},'      # 6M_med, 6M_hard items & time
+                 + '{29},{30},{31},{32},'      # 1Y_easy, 1Y_med items & time
+                 + '{33},{34},{35},{36},'      # 1Y_hard, 2Y_easy items & time
+                 + '{37},{38},{39},{40},'      # 2Y_med, 2Y_hard items & time
+                 + '{41},{42},{43},{44},'      # total reviewer_1, reviewer_2 items & time
+                 + '{45},{46},{47},{48},'      # 3M reviewer_1, reviewer_2 items & time
+                 + '{49},{50},{51},{52},'      # 6M reviewer_1, reviewer_2 items & time
+                 + '{53},{54},{55},{56},'      # 1Y reviewer_1, reviewer_2 items & time
+                 + '{57},{58},{59},{60},'      # 2Y reviewer_1, reviewer_2 items & time
+                 + '{61},{62},{63},{64},'      # 3M_easy reviewer_1, reviewer_2 items & time
+                 + '{65},{66},{67},{68},'      # 3M_med reviewer_1, reviewer_2 items & time
+                 + '{69},{70},{71},{72},'      # 3M_hard reviewer_1, reviewer_2 items & time
+                 + '{73},{74},{75},{76},'      # 6M_easy reviewer_1, reviewer_2 items & time
+                 + '{77},{78},{79},{80},'      # 6M_med reviewer_1, reviewer_2 items & time
+                 + '{81},{82},{83},{84},'      # 6M_hard reviewer_1, reviewer_2 items & time
+                 + '{85},{86},{87},{88},'      # 1Y_easy reviewer_1, reviewer_2 items & time
+                 + '{89},{90},{91},{92},'      # 1Y_med reviewer_1, reviewer_2 items & time
+                 + '{93},{94},{95},{96},'      # 1Y_hard reviewer_1, reviewer_2 items & time
+                 + '{97},{98},{99},{100},'     # 2Y_easy reviewer_1, reviewer_2 items & time
+                 + '{101},{102},{103},{104},'  # 2Y_med reviewer_1, reviewer_2 items & time
+                 + '{105},{106},{107},{108}'   # 2Y_hard reviewer_1, reviewer_2 items & time
             )
         else:
             s = ('{0} \t'
-                + '{1} \t\t {2} \t\t'
-                + '{9} \t\t {10} \t\t'
-                + '{41}\t {42}\t\t{43}\t{44}')
+                 + '{1} \t\t {2} \t\t'
+                 + '{9} \t\t {10} \t\t'
+                 + '{41}\t {42}\t\t{43}\t{44}')
 
         s = s.format(
-                username,                                                                              # 0
-                curator['total_items'], f.format_duration(str(curator['total_time'])+'s', args.units), # 1,2
-                curator['easy_items'], f.format_duration(str(curator['easy_time'])+'s', args.units),   # 3,4
-                curator['med_items'], f.format_duration(str(curator['med_time'])+'s', args.units),     # 5,6
-                curator['hard_items'], f.format_duration(str(curator['hard_time'])+'s', args.units),   # 7,8
-                curator['3M_items'], f.format_duration(str(curator['3M_time'])+'s', args.units),       # 9,10
-                curator['6M_items'], f.format_duration(str(curator['6M_time'])+'s', args.units),       # 11,12
-                curator['1Y_items'], f.format_duration(str(curator['1Y_time'])+'s', args.units),       # 13,14
-                curator['2Y_items'], f.format_duration(str(curator['2Y_time'])+'s', args.units),       # 15,16
-                curator['3M_easy_items'], f.format_duration(str(curator['3M_easy_time'])+'s', args.units),       # 17,18
-                curator['3M_med_items'], f.format_duration(str(curator['3M_med_time'])+'s', args.units),         # 19,20
-                curator['3M_hard_items'], f.format_duration(str(curator['3M_hard_time'])+'s', args.units),       # 21,22
-                curator['6M_easy_items'], f.format_duration(str(curator['6M_easy_time'])+'s', args.units),       # 23,24
-                curator['6M_med_items'], f.format_duration(str(curator['6M_med_time'])+'s', args.units),         # 25,26
-                curator['6M_hard_items'], f.format_duration(str(curator['6M_hard_time'])+'s', args.units),       # 27,28
-                curator['1Y_easy_items'], f.format_duration(str(curator['1Y_easy_time'])+'s', args.units),       # 29,30
-                curator['1Y_med_items'], f.format_duration(str(curator['1Y_med_time'])+'s', args.units),         # 31,32
-                curator['1Y_hard_items'], f.format_duration(str(curator['1Y_hard_time'])+'s', args.units),       # 33,34
-                curator['2Y_easy_items'], f.format_duration(str(curator['2Y_easy_time'])+'s', args.units),       # 35,36
-                curator['2Y_med_items'], f.format_duration(str(curator['2Y_med_time'])+'s', args.units),         # 37,38
-                curator['2Y_hard_items'], f.format_duration(str(curator['2Y_hard_time'])+'s', args.units),       # 39,40
-                curator['total_reviewer1_items'], f.format_duration(str(curator['total_reviewer1_time'])+'s', args.units),   # 41,42
-                curator['total_reviewer2_items'], f.format_duration(str(curator['total_reviewer2_time'])+'s', args.units),   # 43,44
-                curator['3M_reviewer1_items'], f.format_duration(str(curator['3M_reviewer1_time'])+'s', args.units),   # 45,46
-                curator['3M_reviewer2_items'], f.format_duration(str(curator['3M_reviewer2_time'])+'s', args.units),   # 47,48
-                curator['6M_reviewer1_items'], f.format_duration(str(curator['6M_reviewer1_time'])+'s', args.units),   # 49,50
-                curator['6M_reviewer2_items'], f.format_duration(str(curator['6M_reviewer2_time'])+'s', args.units),   # 51,52
-                curator['1Y_reviewer1_items'], f.format_duration(str(curator['1Y_reviewer1_time'])+'s', args.units),   # 53,54
-                curator['1Y_reviewer2_items'], f.format_duration(str(curator['1Y_reviewer2_time'])+'s', args.units),   # 55,56
-                curator['2Y_reviewer1_items'], f.format_duration(str(curator['2Y_reviewer1_time'])+'s', args.units),   # 57,58
-                curator['2Y_reviewer2_items'], f.format_duration(str(curator['2Y_reviewer2_time'])+'s', args.units),   # 59,60
-                curator['3M_easy_reviewer1_items'], f.format_duration(str(curator['3M_easy_reviewer1_time'])+'s', args.units),   # 61,62
-                curator['3M_easy_reviewer2_items'], f.format_duration(str(curator['3M_easy_reviewer2_time'])+'s', args.units),   # 63,64
-                curator['3M_med_reviewer1_items'], f.format_duration(str(curator['3M_med_reviewer1_time'])+'s', args.units),     # 65,66
-                curator['3M_med_reviewer2_items'], f.format_duration(str(curator['3M_med_reviewer2_time'])+'s', args.units),     # 67,68
-                curator['3M_hard_reviewer1_items'], f.format_duration(str(curator['3M_hard_reviewer1_time'])+'s', args.units),   # 69,70
-                curator['3M_hard_reviewer2_items'], f.format_duration(str(curator['3M_hard_reviewer2_time'])+'s', args.units),   # 71,72
-                curator['6M_easy_reviewer1_items'], f.format_duration(str(curator['6M_easy_reviewer1_time'])+'s', args.units),   # 73,74
-                curator['6M_easy_reviewer2_items'], f.format_duration(str(curator['6M_easy_reviewer2_time'])+'s', args.units),   # 75,76
-                curator['6M_med_reviewer1_items'], f.format_duration(str(curator['6M_med_reviewer1_time'])+'s', args.units),     # 77,78
-                curator['6M_med_reviewer2_items'], f.format_duration(str(curator['6M_med_reviewer2_time'])+'s', args.units),     # 79,80
-                curator['6M_hard_reviewer1_items'], f.format_duration(str(curator['6M_hard_reviewer1_time'])+'s', args.units),   # 81,82
-                curator['6M_hard_reviewer2_items'], f.format_duration(str(curator['6M_hard_reviewer2_time'])+'s', args.units),   # 83,84
-                curator['1Y_easy_reviewer1_items'], f.format_duration(str(curator['1Y_easy_reviewer1_time'])+'s', args.units),   # 85,86
-                curator['1Y_easy_reviewer2_items'], f.format_duration(str(curator['1Y_easy_reviewer2_time'])+'s', args.units),   # 87,88
-                curator['1Y_med_reviewer1_items'], f.format_duration(str(curator['1Y_med_reviewer1_time'])+'s', args.units),     # 89,90
-                curator['1Y_med_reviewer2_items'], f.format_duration(str(curator['1Y_med_reviewer2_time'])+'s', args.units),     # 91,92
-                curator['1Y_hard_reviewer1_items'], f.format_duration(str(curator['1Y_hard_reviewer1_time'])+'s', args.units),   # 93,94
-                curator['1Y_hard_reviewer2_items'], f.format_duration(str(curator['1Y_hard_reviewer2_time'])+'s', args.units),   # 95,96
-                curator['2Y_easy_reviewer1_items'], f.format_duration(str(curator['2Y_easy_reviewer1_time'])+'s', args.units),   # 97,98
-                curator['2Y_easy_reviewer2_items'], f.format_duration(str(curator['2Y_easy_reviewer2_time'])+'s', args.units),   # 99,100
-                curator['2Y_med_reviewer1_items'], f.format_duration(str(curator['2Y_med_reviewer1_time'])+'s', args.units),     # 101,102
-                curator['2Y_med_reviewer2_items'], f.format_duration(str(curator['2Y_med_reviewer2_time'])+'s', args.units),     # 103,104
-                curator['2Y_hard_reviewer1_items'], f.format_duration(str(curator['2Y_hard_reviewer1_time'])+'s', args.units),   # 105,106
-                curator['2Y_hard_reviewer2_items'], f.format_duration(str(curator['2Y_hard_reviewer2_time'])+'s', args.units)    # 107,108
+            username,                                                                                 # 0
+            curator['total_items'], f.format_duration(str(curator['total_time']) + 's', args.units),  # 1,2
+            curator['easy_items'], f.format_duration(str(curator['easy_time']) + 's', args.units),    # 3,4
+            curator['med_items'], f.format_duration(str(curator['med_time']) + 's', args.units),      # 5,6
+            curator['hard_items'], f.format_duration(str(curator['hard_time']) + 's', args.units),    # 7,8
+            curator['3M_items'], f.format_duration(str(curator['3M_time']) + 's', args.units),        # 9,10
+            curator['6M_items'], f.format_duration(str(curator['6M_time']) + 's', args.units),        # 11,12
+            curator['1Y_items'], f.format_duration(str(curator['1Y_time']) + 's', args.units),        # 13,14
+            curator['2Y_items'], f.format_duration(str(curator['2Y_time']) + 's', args.units),        # 15,16
+            curator['3M_easy_items'], f.format_duration(str(curator['3M_easy_time']) + 's', args.units),       # 17,18
+            curator['3M_med_items'], f.format_duration(str(curator['3M_med_time']) + 's', args.units),         # 19,20
+            curator['3M_hard_items'], f.format_duration(str(curator['3M_hard_time']) + 's', args.units),       # 21,22
+            curator['6M_easy_items'], f.format_duration(str(curator['6M_easy_time']) + 's', args.units),       # 23,24
+            curator['6M_med_items'], f.format_duration(str(curator['6M_med_time']) + 's', args.units),         # 25,26
+            curator['6M_hard_items'], f.format_duration(str(curator['6M_hard_time']) + 's', args.units),       # 27,28
+            curator['1Y_easy_items'], f.format_duration(str(curator['1Y_easy_time']) + 's', args.units),       # 29,30
+            curator['1Y_med_items'], f.format_duration(str(curator['1Y_med_time']) + 's', args.units),         # 31,32
+            curator['1Y_hard_items'], f.format_duration(str(curator['1Y_hard_time']) + 's', args.units),       # 33,34
+            curator['2Y_easy_items'], f.format_duration(str(curator['2Y_easy_time']) + 's', args.units),       # 35,36
+            curator['2Y_med_items'], f.format_duration(str(curator['2Y_med_time']) + 's', args.units),         # 37,38
+            curator['2Y_hard_items'], f.format_duration(str(curator['2Y_hard_time']) + 's', args.units),       # 39,40
+            curator['total_reviewer1_items'], f.format_duration(str(curator['total_reviewer1_time']) + 's', args.units),   # 41,42
+            curator['total_reviewer2_items'], f.format_duration(str(curator['total_reviewer2_time']) + 's', args.units),   # 43,44
+            curator['3M_reviewer1_items'], f.format_duration(str(curator['3M_reviewer1_time']) + 's', args.units),   # 45,46
+            curator['3M_reviewer2_items'], f.format_duration(str(curator['3M_reviewer2_time']) + 's', args.units),   # 47,48
+            curator['6M_reviewer1_items'], f.format_duration(str(curator['6M_reviewer1_time']) + 's', args.units),   # 49,50
+            curator['6M_reviewer2_items'], f.format_duration(str(curator['6M_reviewer2_time']) + 's', args.units),   # 51,52
+            curator['1Y_reviewer1_items'], f.format_duration(str(curator['1Y_reviewer1_time']) + 's', args.units),   # 53,54
+            curator['1Y_reviewer2_items'], f.format_duration(str(curator['1Y_reviewer2_time']) + 's', args.units),   # 55,56
+            curator['2Y_reviewer1_items'], f.format_duration(str(curator['2Y_reviewer1_time']) + 's', args.units),   # 57,58
+            curator['2Y_reviewer2_items'], f.format_duration(str(curator['2Y_reviewer2_time']) + 's', args.units),   # 59,60
+            curator['3M_easy_reviewer1_items'], f.format_duration(str(curator['3M_easy_reviewer1_time']) + 's', args.units),   # 61,62
+            curator['3M_easy_reviewer2_items'], f.format_duration(str(curator['3M_easy_reviewer2_time']) + 's', args.units),   # 63,64
+            curator['3M_med_reviewer1_items'], f.format_duration(str(curator['3M_med_reviewer1_time']) + 's', args.units),     # 65,66
+            curator['3M_med_reviewer2_items'], f.format_duration(str(curator['3M_med_reviewer2_time']) + 's', args.units),     # 67,68
+            curator['3M_hard_reviewer1_items'], f.format_duration(str(curator['3M_hard_reviewer1_time']) + 's', args.units),   # 69,70
+            curator['3M_hard_reviewer2_items'], f.format_duration(str(curator['3M_hard_reviewer2_time']) + 's', args.units),   # 71,72
+            curator['6M_easy_reviewer1_items'], f.format_duration(str(curator['6M_easy_reviewer1_time']) + 's', args.units),   # 73,74
+            curator['6M_easy_reviewer2_items'], f.format_duration(str(curator['6M_easy_reviewer2_time']) + 's', args.units),   # 75,76
+            curator['6M_med_reviewer1_items'], f.format_duration(str(curator['6M_med_reviewer1_time']) + 's', args.units),     # 77,78
+            curator['6M_med_reviewer2_items'], f.format_duration(str(curator['6M_med_reviewer2_time']) + 's', args.units),     # 79,80
+            curator['6M_hard_reviewer1_items'], f.format_duration(str(curator['6M_hard_reviewer1_time']) + 's', args.units),   # 81,82
+            curator['6M_hard_reviewer2_items'], f.format_duration(str(curator['6M_hard_reviewer2_time']) + 's', args.units),   # 83,84
+            curator['1Y_easy_reviewer1_items'], f.format_duration(str(curator['1Y_easy_reviewer1_time']) + 's', args.units),   # 85,86
+            curator['1Y_easy_reviewer2_items'], f.format_duration(str(curator['1Y_easy_reviewer2_time']) + 's', args.units),   # 87,88
+            curator['1Y_med_reviewer1_items'], f.format_duration(str(curator['1Y_med_reviewer1_time']) + 's', args.units),     # 89,90
+            curator['1Y_med_reviewer2_items'], f.format_duration(str(curator['1Y_med_reviewer2_time']) + 's', args.units),     # 91,92
+            curator['1Y_hard_reviewer1_items'], f.format_duration(str(curator['1Y_hard_reviewer1_time']) + 's', args.units),   # 93,94
+            curator['1Y_hard_reviewer2_items'], f.format_duration(str(curator['1Y_hard_reviewer2_time']) + 's', args.units),   # 95,96
+            curator['2Y_easy_reviewer1_items'], f.format_duration(str(curator['2Y_easy_reviewer1_time']) + 's', args.units),   # 97,98
+            curator['2Y_easy_reviewer2_items'], f.format_duration(str(curator['2Y_easy_reviewer2_time']) + 's', args.units),   # 99,100
+            curator['2Y_med_reviewer1_items'], f.format_duration(str(curator['2Y_med_reviewer1_time']) + 's', args.units),     # 101,102
+            curator['2Y_med_reviewer2_items'], f.format_duration(str(curator['2Y_med_reviewer2_time']) + 's', args.units),     # 103,104
+            curator['2Y_hard_reviewer1_items'], f.format_duration(str(curator['2Y_hard_reviewer1_time']) + 's', args.units),   # 105,106
+            curator['2Y_hard_reviewer2_items'], f.format_duration(str(curator['2Y_hard_reviewer2_time']) + 's', args.units)    # 107,108
             )
 
         total_time += curator['total_time']
