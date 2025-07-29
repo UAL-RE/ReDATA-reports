@@ -74,7 +74,6 @@ if __name__ == '__main__':
     environ['API_TRELLO_KEY'] = secrets.api_trello_key
     environ['API_TRELLO_TOKEN'] = secrets.api_trello_token
     environ['TRELLO_BOARD_ID'] = secrets.trello_board_id
-    environ['TRELLO_PUBLISHEDLIST_ID'] = secrets.trello_publishedlist_id
     environ['GSHEETS_DASHBOARD_POST_URL'] = secrets.gsheets_dashboard_post_url
     environ['GSHEETS_DASHBOARD_KEY'] = secrets.gsheets_dashboard_key
     environ['TOKEN'] = secrets.do_token

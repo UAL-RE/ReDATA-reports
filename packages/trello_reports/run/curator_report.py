@@ -17,7 +17,7 @@ from trello import TrelloClient
 sys.path.insert(0, 'lib/')
 import functions as f
 
-
+debug = 0 # 0 = off, 1 = print card name + output cards to cards.csv, 2 = 1 + print more card info, 3 = 2 + card filter results
 tc = None
 currdate = datetime.now(tzlocal())
 
@@ -33,11 +33,11 @@ def get_card_curators(card, existing_curators: dict[str, any] = None):
 
     curators = []
 
-    print(card.name)
+    if debug > 0: print(card.name)
+    
     for field in card.custom_fields:
-        print(f'    {field.name}: {field.value}')
         if 'reviewer_' in field.name:
-
+            if debug > 1: print(f'    {field.name}: {field.value}')
             curators.append(field.value)
 
             if type(existing_curators) is dict and field.value not in existing_curators:
@@ -77,7 +77,31 @@ def get_card_curators(card, existing_curators: dict[str, any] = None):
                     '1Y_reviewer1_items': 0, '1Y_reviewer1_time': 0,
                     '1Y_reviewer2_items': 0, '1Y_reviewer2_time': 0,
                     '2Y_reviewer1_items': 0, '2Y_reviewer1_time': 0,
-                    '2Y_reviewer2_items': 0, '2Y_reviewer2_time': 0
+                    '2Y_reviewer2_items': 0, '2Y_reviewer2_time': 0,
+                    '3M_easy_reviewer1_items': 0, '3M_easy_reviewer1_time': 0,
+                    '3M_easy_reviewer2_items': 0, '3M_easy_reviewer2_time': 0,
+                    '6M_easy_reviewer1_items': 0, '6M_easy_reviewer1_time': 0,
+                    '6M_easy_reviewer2_items': 0, '6M_easy_reviewer2_time': 0,
+                    '1Y_easy_reviewer1_items': 0, '1Y_easy_reviewer1_time': 0,
+                    '1Y_easy_reviewer2_items': 0, '1Y_easy_reviewer2_time': 0,
+                    '2Y_easy_reviewer1_items': 0, '2Y_easy_reviewer1_time': 0,
+                    '2Y_easy_reviewer2_items': 0, '2Y_easy_reviewer2_time': 0,
+                    '3M_med_reviewer1_items': 0, '3M_med_reviewer1_time': 0,
+                    '3M_med_reviewer2_items': 0, '3M_med_reviewer2_time': 0,
+                    '6M_med_reviewer1_items': 0, '6M_med_reviewer1_time': 0,
+                    '6M_med_reviewer2_items': 0, '6M_med_reviewer2_time': 0,
+                    '1Y_med_reviewer1_items': 0, '1Y_med_reviewer1_time': 0,
+                    '1Y_med_reviewer2_items': 0, '1Y_med_reviewer2_time': 0,
+                    '2Y_med_reviewer1_items': 0, '2Y_med_reviewer1_time': 0,
+                    '2Y_med_reviewer2_items': 0, '2Y_med_reviewer2_time': 0,
+                    '3M_hard_reviewer1_items': 0, '3M_hard_reviewer1_time': 0,
+                    '3M_hard_reviewer2_items': 0, '3M_hard_reviewer2_time': 0,
+                    '6M_hard_reviewer1_items': 0, '6M_hard_reviewer1_time': 0,
+                    '6M_hard_reviewer2_items': 0, '6M_hard_reviewer2_time': 0,
+                    '1Y_hard_reviewer1_items': 0, '1Y_hard_reviewer1_time': 0,
+                    '1Y_hard_reviewer2_items': 0, '1Y_hard_reviewer2_time': 0,
+                    '2Y_hard_reviewer1_items': 0, '2Y_hard_reviewer1_time': 0,
+                    '2Y_hard_reviewer2_items': 0, '2Y_hard_reviewer2_time': 0
                 }
 
                 for member in tc.get_board(card.board_id).all_members():
@@ -85,8 +109,8 @@ def get_card_curators(card, existing_curators: dict[str, any] = None):
                     if member.username == field.value:
                         existing_curators[field.value]['id'] = member.id
 
-    # uncomment for debugging
-    for plugin in card.plugin_data:
+    if debug > 1:
+        for plugin in card.plugin_data:
             if plugin['idPlugin'] == '5c592ae4d74ac4407f4e3af3':
                 powerup_timedata = literal_eval(plugin['value'])['users']
                 print(f'    timedata: {powerup_timedata}')
@@ -125,6 +149,8 @@ def curator_items_time(existing_curators: dict[str, any], curators_field_prefix:
     existing_curators is a dict set up by get_card_curators
     """
 
+    if debug > 2: print(f'cardfilter: {cardfilter}')
+
     # Turn the custom fields into a dict for ease of use
     customfields = {}
     for field in card.custom_fields:
@@ -143,8 +169,9 @@ def curator_items_time(existing_curators: dict[str, any], curators_field_prefix:
                     if name in customfields.keys() and value == customfields[name]:
                         filter_result[name] = True
 
-                    # uncomment for debugging
-                    print(f'    {name} filter: result={filter_result[name]} | requested_difficulty={value} card_difficulty={customfields[name] if name in customfields.keys() else ''}')
+                    if debug > 2:
+                        print(f'      {name} filter: result={filter_result[name]} | '
+                             + f'requested_difficulty={value} card_difficulty={customfields[name] if name in customfields.keys() else ''}')
                 case 'published_date':
                     pubdate = ''
                     cutoffdate = ''
@@ -154,24 +181,48 @@ def curator_items_time(existing_curators: dict[str, any], curators_field_prefix:
                         if pubdate and pubdate >= cutoffdate:
                             filter_result[name] = True
 
-                    # uncomment for debugging
-                    print(f'    {name} filter: result={filter_result[name]} | card_pubdate={str(pubdate)} >= cutoff_date={str(cutoffdate)}')
+                    if debug > 2:
+                        print(f'      {name} filter: result={filter_result[name]} | '
+                             + f'card_pubdate={str(pubdate)} >= cutoff_date={str(cutoffdate)}')
+                case 'reviewer_1' | 'reviewer_2':
+                    if name in customfields.keys():
+                        filter_result[name] = True
+
             include_card = all(filter_result.values())
 
-    # uncomment for debugging
-    print(f'    include_card: {include_card} | {filter_result}')
-    print('     ---')
+    if debug > 2:
+        print(f'    include_card: {include_card} | {filter_result}')
+        print('     ---')
 
     if include_card:
         for username, curator in existing_curators.items():
+            reviewer1_id = ''
+            reviewer2_id = ''
+
             # Item counts for each curator, based on card filter criteria
             for fieldname, fieldvalue in customfields.items():
                 if 'reviewer_' in fieldname and username in fieldvalue:
+
+                    # Add to the item count, whether the curator was reviewer 1 or reviewer 2
                     curator[curators_field_prefix + '_items'] += 1
-                    if 'reviewer_1' in fieldname: curator[curators_field_prefix + '_reviewer1_items'] += 1
+
+                    # Now, add to the specific reviewer 1 or 2 counts for the given curator
+                    # and record whether that curator was reviewer 1 or 2. 
+                    if 'reviewer_1' in fieldname and username in fieldvalue:
+                        curator[curators_field_prefix + '_reviewer1_items'] += 1
+                        reviewer1_id = curator['id']
+                    if 'reviewer_2' in fieldname and username in fieldvalue:
+                        curator[curators_field_prefix + '_reviewer2_items'] += 1
+                        reviewer2_id = curator['id']
 
             # Time for each curator, based on card filter criteria
             curator[curators_field_prefix + '_time'] += get_card_time(card, curator['id'])
+
+            # Record time for the appropriate reviewer1 or reviewer2 categories for this curator (if this curator worked on the item)
+            if reviewer1_id:
+                curator[curators_field_prefix + '_reviewer1_time'] += get_card_time(card, reviewer1_id)
+            if reviewer2_id:
+                curator[curators_field_prefix + '_reviewer2_time'] += get_card_time(card, reviewer2_id)
 
 
 def curator_total_items_time(existing_curators: dict[str, any], card):
@@ -293,19 +344,30 @@ def run(args):
         publishedcards = []
         fl = None
 
-        # Uncomment to write the cards with published_date set to file for debugging purposes
-        # fl = open('publishedcards.csv', 'w',  encoding="utf-8")
-        
-        if fl: fl.write('name,published_date\n') 
+        if debug > 0: fl = open('cards.csv', 'w',  encoding="utf-8")
+
+        if fl: fl.write(
+                'name,difficulty,total_time_mins,article_version,article_revision,'
+                + 'reviewer_1,reviewer_2,submission_date,forms_sent_date,reviewed_date,published_date,keep?\n')
         for card in cards:
-            keep = False
+            # Turn the custom fields into a dict for ease of use
+            customfields = {}
             for field in card.custom_fields:
-                if field.name == 'published_date' and not field.value == '':
-                    keep = True
-                    break
+                customfields[field.name] = field.value
+            keep = True if not customfields.get('published_date', '') == '' else False
+
             if keep:
                 publishedcards.append(card)
-                if fl: fl.write(f'"{card.name.replace('"','""')}","{field.value}"\n')
+
+            if fl: fl.write(
+                f'"{card.name.replace('"','""')}",'
+                + f'{customfields.get('difficulty', '""')},'
+                + f'{customfields.get('total_time_mins', '""')},'
+                + f'{customfields.get('article_version', '""')},{customfields.get('article_revision', '""')},'
+                + f'{customfields.get('reviewer_1', '""')},{customfields.get('reviewer_2', '""')},'
+                + f'{customfields.get('submission_date', '""')},{customfields.get('forms_sent_date', '""')},'
+                + f'{customfields.get('reviewed_date', '""')},{customfields.get('published_date', '""')},'
+                + f'{keep}\n')
         if fl: fl.close()
 
         for card in publishedcards:
@@ -332,13 +394,13 @@ def run(args):
             curator_6m_hard_items_time(curators, card)
             curator_1y_hard_items_time(curators, card)
             curator_2y_hard_items_time(curators, card)
+        print()
 
-            print()
 
     except Exception as e:
         tb_list = traceback.extract_tb(sys.exc_info()[2])
         line_number = tb_list[-1][1]
-        print(f'Error getting board info: {e}, line {line_number}')
+        print(f'Error getting board data: {e}, line {line_number}')
         return {}
 
     print(f'Curation stats for items (and versions) published {f.get_cardlist_filter()['description']}')
@@ -357,17 +419,56 @@ def run(args):
             + f'6M_med_items,6M_med_time ({args.units}),6M_hard_items,6M_hard_time ({args.units}),'
             + f'1Y_easy_items,1Y_easy_time ({args.units}),1Y_med_items,1Y_med_time ({args.units}),'
             + f'1Y_hard_items,1Y_hard_time ({args.units}),2Y_easy_items,2Y_easy_time ({args.units}),'
-            + f'2Y_med_items,2Y_med_time ({args.units}),2Y_hard_items,2Y_hard_time ({args.units})\n')
+            + f'2Y_med_items,2Y_med_time ({args.units}),2Y_hard_items,2Y_hard_time ({args.units}),'
+            + f'total_reviewer_1_items,total_reviewer_1_time ({args.units}),'
+            + f'total_reviewer_2_items,total_reviewer_2_time ({args.units}),'
+            + f'3M_reviewer_1_items,3M_reviewer_1_time ({args.units}),'
+            + f'3M_reviewer_2_items,3M_reviewer_2_time ({args.units}),'
+            + f'6M_reviewer_1_items,6M_reviewer_1_time ({args.units}),'
+            + f'6M_reviewer_2_items,6M_reviewer_2_time ({args.units}),'
+            + f'1Y_reviewer_1_items,1Y_reviewer_1_time ({args.units}),'
+            + f'1Y_reviewer_2_items,1Y_reviewer_2_time ({args.units}),'
+            + f'2Y_reviewer_1_items,2Y_reviewer_1_time ({args.units}),'
+            + f'2Y_reviewer_2_items,2Y_reviewer_2_time ({args.units}),'
+            + f'3M_easy_reviewer_1_items,3M_easy_reviewer_1_time ({args.units}),'
+            + f'3M_easy_reviewer_2_items,3M_easy_reviewer_2_time ({args.units}),'
+            + f'3M_med_reviewer_1_items,3M_med_reviewer_1_time ({args.units}),'
+            + f'3M_med_reviewer_2_items,3M_med_reviewer_2_time ({args.units}),'
+            + f'3M_hard_reviewer_1_items,3M_hard_reviewer_1_time ({args.units}),'
+            + f'3M_hard_reviewer_2_items,3M_hard_reviewer_2_time ({args.units}),'
+            + f'6M_easy_reviewer_1_items,6M_easy_reviewer_1_time ({args.units}),'
+            + f'6M_easy_reviewer_2_items,6M_easy_reviewer_2_time ({args.units}),'
+            + f'6M_med_reviewer_1_items,6M_med_reviewer_1_time ({args.units}),'
+            + f'6M_med_reviewer_2_items,6M_med_reviewer_2_time ({args.units}),'
+            + f'6M_hard_reviewer_1_items,6M_hard_reviewer_1_time ({args.units}),'
+            + f'6M_hard_reviewer_2_items,6M_hard_reviewer_2_time ({args.units}),'
+            + f'1Y_easy_reviewer_1_items,1Y_easy_reviewer_1_time ({args.units}),'
+            + f'1Y_easy_reviewer_2_items,1Y_easy_reviewer_2_time ({args.units}),'
+            + f'1Y_med_reviewer_1_items,1Y_med_reviewer_1_time ({args.units}),'
+            + f'1Y_med_reviewer_2_items,1Y_med_reviewer_2_time ({args.units}),'
+            + f'1Y_hard_reviewer_1_items,1Y_hard_reviewer_1_time ({args.units}),'
+            + f'1Y_hard_reviewer_2_items,1Y_hard_reviewer_2_time ({args.units}),'
+            + f'2Y_easy_reviewer_1_items,2Y_easy_reviewer_1_time ({args.units}),'
+            + f'2Y_easy_reviewer_2_items,2Y_easy_reviewer_2_time ({args.units}),'
+            + f'2Y_med_reviewer_1_items,2Y_med_reviewer_1_time ({args.units}),'
+            + f'2Y_med_reviewer_2_items,2Y_med_reviewer_2_time ({args.units}),'
+            + f'2Y_hard_reviewer_1_items,2Y_hard_reviewer_1_time ({args.units}),'
+            + f'2Y_hard_reviewer_2_items,2Y_hard_reviewer_2_time ({args.units}),'
+            + '\n')
 
     else:
-        print(f'username\ttotal_items\ttotal_time ({args.units})\tlast 3m items\tlast 3m time ({args.units})')
+        print(
+            f'username\ttot_itms\ttot_tm({args.units})\tlast 3m itms\tlast 3m tm({args.units})'
+            + f' rvwr1_itms rvwr1_tm({args.units})'
+            + f' rvwr2_itms rvwr2_tm({args.units})')
 
     total_time = 0
     total_items = 0
 
     for username, curator in curators.items():
         if outfile:
-            s = ('{0},{1},{2},'              # username, total items, total time
+            s = (
+                '{0},{1},{2},'              # username, total items, total time
                 + '{3},{4},{5},{6},{7},{8},' # easy, med, hard items & time
                 + '{9},{10},{11},{12},'      # 3M, 6M items & time
                 + '{13},{14},{15},{16},'     # 1Y, 2Y items & time
@@ -376,11 +477,30 @@ def run(args):
                 + '{25},{26},{27},{28},'     # 6M_med, 6M_hard items & time
                 + '{29},{30},{31},{32},'     # 1Y_easy, 1Y_med items & time
                 + '{33},{34},{35},{36},'     # 1Y_hard, 2Y_easy items & time
-                + '{37},{38},{39},{40}')    # 2Y_med, 2Y_hard items & time
+                + '{37},{38},{39},{40},'     # 2Y_med, 2Y_hard items & time
+                + '{41},{42},{43},{44},'     # total reviewer_1, reviewer_2 items & time
+                + '{45},{46},{47},{48},'     # 3M reviewer_1, reviewer_2 items & time
+                + '{49},{50},{51},{52},'     # 6M reviewer_1, reviewer_2 items & time
+                + '{53},{54},{55},{56},'     # 1Y reviewer_1, reviewer_2 items & time
+                + '{57},{58},{59},{60},'     # 2Y reviewer_1, reviewer_2 items & time
+                + '{61},{62},{63},{64},'     # 3M_easy reviewer_1, reviewer_2 items & time
+                + '{65},{66},{67},{68},'     # 3M_med reviewer_1, reviewer_2 items & time
+                + '{69},{70},{71},{72},'     # 3M_hard reviewer_1, reviewer_2 items & time
+                + '{73},{74},{75},{76},'     # 6M_easy reviewer_1, reviewer_2 items & time
+                + '{77},{78},{79},{80},'     # 6M_med reviewer_1, reviewer_2 items & time
+                + '{81},{82},{83},{84},'     # 6M_hard reviewer_1, reviewer_2 items & time
+                + '{85},{86},{87},{88},'     # 1Y_easy reviewer_1, reviewer_2 items & time
+                + '{89},{90},{91},{92},'     # 1Y_med reviewer_1, reviewer_2 items & time
+                + '{93},{94},{95},{96},'     # 1Y_hard reviewer_1, reviewer_2 items & time
+                + '{97},{98},{99},{100},'    # 2Y_easy reviewer_1, reviewer_2 items & time
+                + '{101},{102},{103},{104},' # 2Y_med reviewer_1, reviewer_2 items & time
+                + '{105},{106},{107},{108}' # 2Y_hard reviewer_1, reviewer_2 items & time
+            )
         else:
             s = ('{0} \t'
                 + '{1} \t\t {2} \t\t'
-                + '{9} \t\t {10} \t')
+                + '{9} \t\t {10} \t\t'
+                + '{41}\t {42}\t\t{43}\t{44}')
 
         s = s.format(
                 username,                                                                              # 0
@@ -403,9 +523,43 @@ def run(args):
                 curator['1Y_hard_items'], f.format_duration(str(curator['1Y_hard_time'])+'s', args.units),       # 33,34
                 curator['2Y_easy_items'], f.format_duration(str(curator['2Y_easy_time'])+'s', args.units),       # 35,36
                 curator['2Y_med_items'], f.format_duration(str(curator['2Y_med_time'])+'s', args.units),         # 37,38
-                curator['2Y_hard_items'], f.format_duration(str(curator['2Y_hard_time'])+'s', args.units))       # 39,40
-                
-        
+                curator['2Y_hard_items'], f.format_duration(str(curator['2Y_hard_time'])+'s', args.units),       # 39,40
+                curator['total_reviewer1_items'], f.format_duration(str(curator['total_reviewer1_time'])+'s', args.units),   # 41,42
+                curator['total_reviewer2_items'], f.format_duration(str(curator['total_reviewer2_time'])+'s', args.units),   # 43,44
+                curator['3M_reviewer1_items'], f.format_duration(str(curator['3M_reviewer1_time'])+'s', args.units),   # 45,46
+                curator['3M_reviewer2_items'], f.format_duration(str(curator['3M_reviewer2_time'])+'s', args.units),   # 47,48
+                curator['6M_reviewer1_items'], f.format_duration(str(curator['6M_reviewer1_time'])+'s', args.units),   # 49,50
+                curator['6M_reviewer2_items'], f.format_duration(str(curator['6M_reviewer2_time'])+'s', args.units),   # 51,52
+                curator['1Y_reviewer1_items'], f.format_duration(str(curator['1Y_reviewer1_time'])+'s', args.units),   # 53,54
+                curator['1Y_reviewer2_items'], f.format_duration(str(curator['1Y_reviewer2_time'])+'s', args.units),   # 55,56
+                curator['2Y_reviewer1_items'], f.format_duration(str(curator['2Y_reviewer1_time'])+'s', args.units),   # 57,58
+                curator['2Y_reviewer2_items'], f.format_duration(str(curator['2Y_reviewer2_time'])+'s', args.units),   # 59,60
+                curator['3M_easy_reviewer1_items'], f.format_duration(str(curator['3M_easy_reviewer1_time'])+'s', args.units),   # 61,62
+                curator['3M_easy_reviewer2_items'], f.format_duration(str(curator['3M_easy_reviewer2_time'])+'s', args.units),   # 63,64
+                curator['3M_med_reviewer1_items'], f.format_duration(str(curator['3M_med_reviewer1_time'])+'s', args.units),     # 65,66
+                curator['3M_med_reviewer2_items'], f.format_duration(str(curator['3M_med_reviewer2_time'])+'s', args.units),     # 67,68
+                curator['3M_hard_reviewer1_items'], f.format_duration(str(curator['3M_hard_reviewer1_time'])+'s', args.units),   # 69,70
+                curator['3M_hard_reviewer2_items'], f.format_duration(str(curator['3M_hard_reviewer2_time'])+'s', args.units),   # 71,72
+                curator['6M_easy_reviewer1_items'], f.format_duration(str(curator['6M_easy_reviewer1_time'])+'s', args.units),   # 73,74
+                curator['6M_easy_reviewer2_items'], f.format_duration(str(curator['6M_easy_reviewer2_time'])+'s', args.units),   # 75,76
+                curator['6M_med_reviewer1_items'], f.format_duration(str(curator['6M_med_reviewer1_time'])+'s', args.units),     # 77,78
+                curator['6M_med_reviewer2_items'], f.format_duration(str(curator['6M_med_reviewer2_time'])+'s', args.units),     # 79,80
+                curator['6M_hard_reviewer1_items'], f.format_duration(str(curator['6M_hard_reviewer1_time'])+'s', args.units),   # 81,82
+                curator['6M_hard_reviewer2_items'], f.format_duration(str(curator['6M_hard_reviewer2_time'])+'s', args.units),   # 83,84
+                curator['1Y_easy_reviewer1_items'], f.format_duration(str(curator['1Y_easy_reviewer1_time'])+'s', args.units),   # 85,86
+                curator['1Y_easy_reviewer2_items'], f.format_duration(str(curator['1Y_easy_reviewer2_time'])+'s', args.units),   # 87,88
+                curator['1Y_med_reviewer1_items'], f.format_duration(str(curator['1Y_med_reviewer1_time'])+'s', args.units),     # 89,90
+                curator['1Y_med_reviewer2_items'], f.format_duration(str(curator['1Y_med_reviewer2_time'])+'s', args.units),     # 91,92
+                curator['1Y_hard_reviewer1_items'], f.format_duration(str(curator['1Y_hard_reviewer1_time'])+'s', args.units),   # 93,94
+                curator['1Y_hard_reviewer2_items'], f.format_duration(str(curator['1Y_hard_reviewer2_time'])+'s', args.units),   # 95,96
+                curator['2Y_easy_reviewer1_items'], f.format_duration(str(curator['2Y_easy_reviewer1_time'])+'s', args.units),   # 97,98
+                curator['2Y_easy_reviewer2_items'], f.format_duration(str(curator['2Y_easy_reviewer2_time'])+'s', args.units),   # 99,100
+                curator['2Y_med_reviewer1_items'], f.format_duration(str(curator['2Y_med_reviewer1_time'])+'s', args.units),     # 101,102
+                curator['2Y_med_reviewer2_items'], f.format_duration(str(curator['2Y_med_reviewer2_time'])+'s', args.units),     # 103,104
+                curator['2Y_hard_reviewer1_items'], f.format_duration(str(curator['2Y_hard_reviewer1_time'])+'s', args.units),   # 105,106
+                curator['2Y_hard_reviewer2_items'], f.format_duration(str(curator['2Y_hard_reviewer2_time'])+'s', args.units)    # 107,108
+            )
+
         total_time += curator['total_time']
         total_items += curator['total_items']
 

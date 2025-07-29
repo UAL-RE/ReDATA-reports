@@ -34,8 +34,9 @@ def get_cardlist_filter():
     """
 
     # To limit the number of results for testing, add limit parameter to the query. E.g., 'limit': '5'
-    return {'query': {'customFieldItems': 'true'}, 
-            'description': f'since the beginning'}
+    # 1000 is the maximum limit (don't change unless for testing)
+    return {'query': {'customFieldItems': 'true', 'sort': '-id', 'limit': '1000'}, 
+            'description': f'fetched cards with published_date set.'}
 
 
 def sync_to_dashboard(data, report):
