@@ -479,33 +479,33 @@ def run(args):
     for username, curator in curators.items():
         if outfile:
             s = (
-                 '{0},{1},{2},'                # username, total items, total time
-                 + '{3},{4},{5},{6},{7},{8},'  # easy, med, hard items & time
-                 + '{9},{10},{11},{12},'       # 3M, 6M items & time
-                 + '{13},{14},{15},{16},'      # 1Y, 2Y items & time
-                 + '{17},{18},{19},{20},'      # 3M_easy, 3M_med items & time
-                 + '{21},{22},{23},{24},'      # 3M_hard, 6M_easy items & time
-                 + '{25},{26},{27},{28},'      # 6M_med, 6M_hard items & time
-                 + '{29},{30},{31},{32},'      # 1Y_easy, 1Y_med items & time
-                 + '{33},{34},{35},{36},'      # 1Y_hard, 2Y_easy items & time
-                 + '{37},{38},{39},{40},'      # 2Y_med, 2Y_hard items & time
-                 + '{41},{42},{43},{44},'      # total reviewer_1, reviewer_2 items & time
-                 + '{45},{46},{47},{48},'      # 3M reviewer_1, reviewer_2 items & time
-                 + '{49},{50},{51},{52},'      # 6M reviewer_1, reviewer_2 items & time
-                 + '{53},{54},{55},{56},'      # 1Y reviewer_1, reviewer_2 items & time
-                 + '{57},{58},{59},{60},'      # 2Y reviewer_1, reviewer_2 items & time
-                 + '{61},{62},{63},{64},'      # 3M_easy reviewer_1, reviewer_2 items & time
-                 + '{65},{66},{67},{68},'      # 3M_med reviewer_1, reviewer_2 items & time
-                 + '{69},{70},{71},{72},'      # 3M_hard reviewer_1, reviewer_2 items & time
-                 + '{73},{74},{75},{76},'      # 6M_easy reviewer_1, reviewer_2 items & time
-                 + '{77},{78},{79},{80},'      # 6M_med reviewer_1, reviewer_2 items & time
-                 + '{81},{82},{83},{84},'      # 6M_hard reviewer_1, reviewer_2 items & time
-                 + '{85},{86},{87},{88},'      # 1Y_easy reviewer_1, reviewer_2 items & time
-                 + '{89},{90},{91},{92},'      # 1Y_med reviewer_1, reviewer_2 items & time
-                 + '{93},{94},{95},{96},'      # 1Y_hard reviewer_1, reviewer_2 items & time
-                 + '{97},{98},{99},{100},'     # 2Y_easy reviewer_1, reviewer_2 items & time
-                 + '{101},{102},{103},{104},'  # 2Y_med reviewer_1, reviewer_2 items & time
-                 + '{105},{106},{107},{108}'   # 2Y_hard reviewer_1, reviewer_2 items & time
+            '{0},{1},{2},'                # username, total items, total time
+            + '{3},{4},{5},{6},{7},{8},'  # easy, med, hard items & time
+            + '{9},{10},{11},{12},'       # 3M, 6M items & time
+            + '{13},{14},{15},{16},'      # 1Y, 2Y items & time
+            + '{17},{18},{19},{20},'      # 3M_easy, 3M_med items & time
+            + '{21},{22},{23},{24},'      # 3M_hard, 6M_easy items & time
+            + '{25},{26},{27},{28},'      # 6M_med, 6M_hard items & time
+            + '{29},{30},{31},{32},'      # 1Y_easy, 1Y_med items & time
+            + '{33},{34},{35},{36},'      # 1Y_hard, 2Y_easy items & time
+            + '{37},{38},{39},{40},'      # 2Y_med, 2Y_hard items & time
+            + '{41},{42},{43},{44},'      # total reviewer_1, reviewer_2 items & time
+            + '{45},{46},{47},{48},'      # 3M reviewer_1, reviewer_2 items & time
+            + '{49},{50},{51},{52},'      # 6M reviewer_1, reviewer_2 items & time
+            + '{53},{54},{55},{56},'      # 1Y reviewer_1, reviewer_2 items & time
+            + '{57},{58},{59},{60},'      # 2Y reviewer_1, reviewer_2 items & time
+            + '{61},{62},{63},{64},'      # 3M_easy reviewer_1, reviewer_2 items & time
+            + '{65},{66},{67},{68},'      # 3M_med reviewer_1, reviewer_2 items & time
+            + '{69},{70},{71},{72},'      # 3M_hard reviewer_1, reviewer_2 items & time
+            + '{73},{74},{75},{76},'      # 6M_easy reviewer_1, reviewer_2 items & time
+            + '{77},{78},{79},{80},'      # 6M_med reviewer_1, reviewer_2 items & time
+            + '{81},{82},{83},{84},'      # 6M_hard reviewer_1, reviewer_2 items & time
+            + '{85},{86},{87},{88},'      # 1Y_easy reviewer_1, reviewer_2 items & time
+            + '{89},{90},{91},{92},'      # 1Y_med reviewer_1, reviewer_2 items & time
+            + '{93},{94},{95},{96},'      # 1Y_hard reviewer_1, reviewer_2 items & time
+            + '{97},{98},{99},{100},'     # 2Y_easy reviewer_1, reviewer_2 items & time
+            + '{101},{102},{103},{104},'  # 2Y_med reviewer_1, reviewer_2 items & time
+            + '{105},{106},{107},{108}'   # 2Y_hard reviewer_1, reviewer_2 items & time
             )
         else:
             s = ('{0} \t'
@@ -581,7 +581,7 @@ def run(args):
 
     print()
     print(f'Total curation hours:\t{f.format_duration(str(total_time) + "s", "H")}')
-    print(f'Avg hours per item:\t{f.format_duration(str(total_time/total_items) + "s", "H")}')
+    print(f'Avg hours per item:\t{f.format_duration(str(total_time / total_items) + "s", "H")}')
 
     if outfile:
         outfile.close()
