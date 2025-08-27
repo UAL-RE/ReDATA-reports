@@ -11,7 +11,7 @@ from version import __version__, __commit__
 import items_report
 import userquota_report
 
-sys.path.insert(0, 'lib/')
+sys.path.insert(0, 'lib/')  # Allows loading of shared functions when running locally. No effect when running as DO func.
 import functions as f
 import secrets
 

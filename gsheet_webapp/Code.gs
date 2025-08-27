@@ -16,7 +16,7 @@
 
 var SCRIPT_PROP = PropertiesService.getScriptProperties(); // new property service
 
-version="1.1.2"; //change when the version changes
+version="2.0.0"; //change when the version changes
 
 //Best practice for using BetterLog and logging to a spreadsheet:
 // You can add and set the property "BetterLogLevel" in File > Project Properties and change it to

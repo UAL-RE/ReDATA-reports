@@ -9,7 +9,7 @@ import sys
 from os import environ
 from version import __version__, __commit__
 
-sys.path.insert(0, 'lib/')
+sys.path.insert(0, 'lib/')  # Allows loading of shared functions when running locally. No effect when running as DO func.
 import curator_report
 import functions as f
 import secrets
