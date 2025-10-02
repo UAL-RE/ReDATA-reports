@@ -4,11 +4,14 @@
 #
 # Author: Fernando Rios
 
+import sys
 import requests
 import simplejson as json
 from multiprocessing import Pool
 from datetime import datetime
 from os import environ
+
+sys.path.insert(0, 'lib/')
 import functions as f
 
 
@@ -16,7 +19,7 @@ def get_institution_articles():
     page = 1
     article_list = []
     while True:
-        api_url = '{0}/account/institution/articles?page={1}&page_size=1000'.format(environ['API_URL_BASE'], page)
+        api_url = '{0}/account/institution/articles?page={1}&page_size=1000'.format(environ['API_FIGSHARE_URL_BASE'], page)
         page += 1
         response = requests.get(api_url, headers=f.get_request_headers())
 
@@ -37,14 +40,14 @@ def get_public_article_info(article_ids):
         article_ids = [article_ids]
 
     for id in article_ids:
-        api_url = '{0}/articles/{1}/versions'.format(environ['API_URL_BASE'], id)
+        api_url = '{0}/articles/{1}/versions'.format(environ['API_FIGSHARE_URL_BASE'], id)
         response = requests.get(api_url, headers=f.get_request_headers())
         if response.status_code == 200:
             article_versions = json.loads(response.text)
             if len(article_versions) > 0:
                 for version in article_versions:
                     version_num = version['version']
-                    api_url = '{0}/articles/{1}/versions/{2}'.format(environ['API_URL_BASE'], id, version_num)
+                    api_url = '{0}/articles/{1}/versions/{2}'.format(environ['API_FIGSHARE_URL_BASE'], id, version_num)
                     response = requests.get(api_url, headers=f.get_request_headers())
 
                     if response.status_code == 200:
@@ -69,7 +72,7 @@ def get_private_article_info(article_ids):
         article_ids = [article_ids]
 
     for id in article_ids:
-        api_url = '{0}/account/articles/{1}'.format(environ['API_URL_BASE'], id)
+        api_url = '{0}/account/articles/{1}'.format(environ['API_FIGSHARE_URL_BASE'], id)
         response = requests.get(api_url, headers=f.get_request_headers())
         if response.status_code == 200:
             article_info.append(json.loads(response.text))

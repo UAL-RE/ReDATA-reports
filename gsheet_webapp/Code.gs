@@ -16,7 +16,7 @@
 
 var SCRIPT_PROP = PropertiesService.getScriptProperties(); // new property service
 
-version="1.1.2"; //change when the version changes
+version="2.0.0"; //change when the version changes
 
 //Best practice for using BetterLog and logging to a spreadsheet:
 // You can add and set the property "BetterLogLevel" in File > Project Properties and change it to
@@ -33,8 +33,9 @@ function test(){
     curl -L "script url" -H "Content-Type: application/json"  --data '{"action":"insertupdate"}'
   */
 
-  e=testData_insertExists_users();
+  //e=testData_insertExists_users();
   //e=testData_insertExists_items();
+  e=testData_insertExists_curators();
   
   console.log(doPost(e).getContent());
 }
@@ -123,14 +124,18 @@ function insert_or_update(data, sheet_name, headRow = 1) {
         if (headers[i] == "Timestamp"){ // special case if you include a 'Timestamp' column
           row.push(new Date());
         } else { // else use header name to get data
-          row.push(item[headers[i]]);
+          row.push(item[headers[i].trim()]);
         }
       }
       rows.push(row);
     }
 
+    // clear sheet before adding values
+    if(sheet.getLastRow()>1){
+      sheet.deleteRows(2, sheet.getLastRow()-1);
+    }
+
     // more efficient to set values as [][] array than individually
-    sheet.deleteRows(2, sheet.getLastRow()-1);
     sheet.getRange(sheet.getLastRow()+1, 1, rows.length, rows[0].length).setValues(rows);
 
     SpreadsheetApp.flush();
