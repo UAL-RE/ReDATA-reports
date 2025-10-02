@@ -1,3 +1,6 @@
+## v2.0.0
+* Feat: Add reports for stats from Trello (Issue #19) by @zoidy in https://github.com/UAL-RE/ReDATA-reports/pull/20
+
 ## v1.1.2
 
 * Fix: double counting of storage used in Items Report dashboard (Issue #15) by @zoidy in https://github.com/UAL-RE/ReDATA-reports/pull/16
