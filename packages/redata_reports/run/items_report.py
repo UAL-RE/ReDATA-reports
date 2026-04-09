@@ -59,7 +59,7 @@ def get_public_article_info(article_ids):
                 unpublished_article_ids.append(id)
 
         else:
-            print('Error getting article versions for {1}, Response code {0}'.format(id, response.status_code))
+            print('Error getting article versions for {0}, Response code {1}'.format(id, response.status_code))
 
     return article_info, unpublished_article_ids
 
