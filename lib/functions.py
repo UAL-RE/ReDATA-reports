@@ -52,7 +52,7 @@ def sync_to_dashboard(data, report):
         return 'No data to send'
 
     postdata = {"action": "insertupdate",
-                "from_ip:" get_public_ip(),
+                "from_ip": get_public_ip(),
                 "sheet": report,
                 "accesskey": environ['GSHEETS_DASHBOARD_KEY'],
                 "data": data}
