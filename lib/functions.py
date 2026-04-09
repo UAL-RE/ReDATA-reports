@@ -52,6 +52,7 @@ def sync_to_dashboard(data, report):
         return 'No data to send'
 
     postdata = {"action": "insertupdate",
+                "from_ip:" get_public_ip(),
                 "sheet": report,
                 "accesskey": environ['GSHEETS_DASHBOARD_KEY'],
                 "data": data}
@@ -198,6 +199,22 @@ def format_duration(duration_string: str, target_unit: str, append_unit: bool=Fa
     converted_duration = duration_in_seconds / unit_to_seconds[target_unit]
 
     return f'{converted_duration:.2f} {target_unit}' if append_unit else f'{converted_duration:.2f}'
+
+
+def get_public_ip():
+    """
+    Returns the publicly visible IP address of the current host
+    """
+    try:
+        r = requests.get("https://checkip.amazonaws.com")
+        if r.status_code == 200:
+            return r.text.strip()
+        else:
+            print(f"Error getting public IP address of the current host. {0}", r.status_code)
+            return("Unknown")
+    except Exception as e:
+        print(f"Error executing requests.get. {0}", e.message)
+        return("Unknown")
 
 
 def get_report_outfile(reportname, prefix=''):

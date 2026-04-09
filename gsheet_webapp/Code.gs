@@ -61,11 +61,12 @@ function doPost(e){
     objJSON = JSON.parse(jsonString);
     action = objJSON.action;
     key = objJSON.accesskey;
+    srcip = objJSON.from_ip;
     
     if(key != SCRIPT_PROP.getProperty("accesskey"))
       throw new Error("Invalid access key.");
 
-    Logger.info(action);
+    Logger.info(action + " from " + srcip);
     
     result = handleAction(action, objJSON);
 
