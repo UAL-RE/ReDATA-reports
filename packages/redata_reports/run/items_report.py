@@ -59,7 +59,7 @@ def get_public_article_info(article_ids):
                 unpublished_article_ids.append(id)
 
         else:
-            print('Error getting article versions for {1}, Response code {0}'.format(id, response.status_code))
+            print('Error getting article versions for {0}, Response code {1}'.format(id, response.status_code))
 
     return article_info, unpublished_article_ids
 
@@ -114,7 +114,7 @@ def run(args):
         if len(r2) > 0:
             unpublished_article_ids.append(r2)
 
-    print("total public articles (excluding removed articles): {0}".format(len(public_articles_info)))
+    print("total processed public articles (excluding removed articles): {0}".format(len(public_articles_info)))
 
     print('Getting usage by private articles')
     private_articles = [item for item in institution_articles if item['published_date'] is None]
@@ -134,6 +134,8 @@ def run(args):
     for r in result:
         if len(r) > 0:
             private_articles_info.append(r)
+
+    print("total private articles processed (including removed articles): {0}".format(len(private_articles_info)))
 
     articles = []
     total_usage = 0

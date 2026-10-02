@@ -16,7 +16,7 @@
 
 var SCRIPT_PROP = PropertiesService.getScriptProperties(); // new property service
 
-version="2.0.0"; //change when the version changes
+version="2.1.0"; //change when the version changes
 
 //Best practice for using BetterLog and logging to a spreadsheet:
 // You can add and set the property "BetterLogLevel" in File > Project Properties and change it to
@@ -61,11 +61,12 @@ function doPost(e){
     objJSON = JSON.parse(jsonString);
     action = objJSON.action;
     key = objJSON.accesskey;
+    srcip = objJSON.from_ip;
     
     if(key != SCRIPT_PROP.getProperty("accesskey"))
       throw new Error("Invalid access key.");
 
-    Logger.info(action);
+    Logger.info(action + " from " + srcip);
     
     result = handleAction(action, objJSON);
 
