@@ -112,6 +112,11 @@ def get_card_curators(card, existing_curators: dict[str, any] = None):
                     # Extract the id from the username
                     if member.username == field.value:
                         existing_curators[field.value]['id'] = member.id
+                        
+                # If the user was not found (probably because it was deleted), assign the id based on a lookup table
+                if existing_curators[field.value]['id'] == '':
+                    id = environ[field.value]
+                    existing_curators[field.value]['id'] = id
 
     if debug > 1:
         for plugin in card.plugin_data:
@@ -411,7 +416,7 @@ def run(args):
     except Exception as e:
         tb_list = traceback.extract_tb(sys.exc_info()[2])
         line_number = tb_list[-1][1]
-        print(f'Error getting board data: {e}, line {line_number}')
+        print(f'Error getting board data: {traceback.print_exception(type(e), e,  e.__traceback__)}, line {line_number}')
         return {}
 
     print(f'Curation stats for items (and versions) published {f.get_cardlist_filter()["description"]}')

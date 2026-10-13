@@ -78,5 +78,8 @@ if __name__ == '__main__':
     environ['GSHEETS_DASHBOARD_POST_URL'] = secrets.gsheets_dashboard_post_url
     environ['GSHEETS_DASHBOARD_KEY'] = secrets.gsheets_dashboard_key
     environ['TOKEN'] = secrets.do_token
+    
+    for key, value in secrets.deleted_users.items():
+        environ[key] = value
 
     print(run(args))
